@@ -1,4 +1,4 @@
-import kaplay, { KAPLAYCtxT, GameObj } from "kaplay";
+import { KAPLAYCtxT, GameObj } from "kaplay";
 
 const UP = [0, -1];
 const DOWN = [0, 1];
@@ -27,7 +27,7 @@ export class Player {
     protected pos: number[],
   ) {
     this.k = k;
-    k.loadSprite("jotaro", "sprites/jotaro-outline.png");
+    k.loadSprite("jotaro", "sprites/Entities/jotaro-outline.png");
 
     this.player = k.add([
       k.sprite("jotaro"),

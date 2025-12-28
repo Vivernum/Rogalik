@@ -1,7 +1,7 @@
 import { GameObj, KAPLAYCtxT } from "kaplay";
 
 export function createAk(k: KAPLAYCtxT, player: GameObj) {
-  k.loadSprite("ak", "sprites/ak.png");
+  k.loadSprite("ak", "sprites/Weapons/ak.png");
 
   const gun = k.add([
     k.sprite("ak"),
@@ -9,7 +9,6 @@ export function createAk(k: KAPLAYCtxT, player: GameObj) {
     k.rotate(0),
     k.pos(330,200),
     k.anchor(k.vec2(-1,0)),
-    k.rotate(0),
     'weapon',
     {
       isEquipped: false,
@@ -23,9 +22,11 @@ export function createAk(k: KAPLAYCtxT, player: GameObj) {
         this.trigger('equipped', {player});
       },
 
+      // might as well use onUpdate, but with cam following
+      // player there is no real need for onUpdate
       addMouseTracking(player: GameObj) {
-        gun.onUpdate(() => {
-          gun.angle = k.mousePos().sub(player.pos).angle();
+        gun.onMouseMove(() => {
+          gun.angle = k.toWorld(k.mousePos()).sub(player.pos).angle();
           gun.flipY = Math.abs(gun.angle) > 90;
         });
       },

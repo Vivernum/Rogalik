@@ -1,50 +1,50 @@
-import kaplay from "kaplay";
+import kaplay, { GameObj } from "kaplay";
 import { createPlayer } from "./Entities/Player";
 import { createAk } from "./Weapons/ak";
 
+import { map } from './Levels/testLevel';
+
 const k = kaplay({
-  width: 800,
-  height: 400,
+  width: 1000,
+  height: 800,
   letterbox: true,
 });
 
 k.loadRoot("./"); // A good idea for Itch.io publishing later
 
-k.add([
-    k.pos(0, 0),
-    k.rect(k.width(), 20),
-    k.area(),
-    k.body({ isStatic: true }),
-    k.color(k.rgb(128, 128, 128)),
-    "wall",
-]);
+k.loadSprite('floor', 'sprites/Textures/floor.png');
+k.loadSprite('lava', 'sprites/Textures/lava.png');
+k.loadSprite('wallW', 'sprites/Textures/wallOnWidth.png');
+k.loadSprite('wallH', 'sprites/Textures/wallOnHeight.png');
 
-k.add([
-    k.pos(0, k.height() - 20),
-    k.rect(k.width(), 20),
-    k.area(),
-    k.body({ isStatic: true }),
-    k.color(k.rgb(128, 128, 128)),
-    "wall",
-]);
+k.addLevel(map, {
+  tileWidth: 50,
+  tileHeight: 50,
+  tiles: {
+    "w": () => [
+      k.sprite("wallW"),
+      k.area(),
+      k.body({ isStatic: true }),
+      "wall"
+    ],
+    "h": () => [
+      k.sprite("wallH"),
+      k.area(),
+      k.body({ isStatic: true}),
+      "wall",
+    ],
+    "l": () => [
+      k.sprite("lava"),
+      k.area(),
+      "lava",
+      'dangerousFloor',
+    ],
+    " ": () => [
+      k.sprite("floor"),
+      "floor"
+    ]
+  }
+})
 
-k.add([
-    k.pos(0, 0),
-    k.rect(20, k.height()),
-    k.area(),
-    k.body({ isStatic: true }),
-    k.color(k.rgb(128, 128, 128)),
-    "wall",
-]);
-
-k.add([
-    k.pos(k.width() - 20, 0),
-    k.rect(20, k.height()),
-    k.area(),
-    k.body({ isStatic: true }),
-    k.color(k.rgb(128, 128, 128)),
-    "wall",
-]);
-
-const player = createPlayer(k);
+const player: GameObj = createPlayer(k);
 const ak = createAk(k, player);
