@@ -3,6 +3,7 @@ import { createPlayer } from "./Entities/Player";
 import { createAk } from "./Weapons/ak";
 
 import { map } from './Levels/testLevel';
+import { createEnemy } from "./Entities/Enemy";
 
 const k = kaplay({
   // width: 1000,
@@ -18,7 +19,7 @@ k.loadSprite('lava', 'sprites/Textures/lava.png');
 k.loadSprite('wallW', 'sprites/Textures/wallOnWidth.png');
 k.loadSprite('wallH', 'sprites/Textures/wallOnHeight.png');
 
-k.addLevel(map, {
+const level = k.addLevel(map, {
   tileWidth: 50,
   tileHeight: 50,
   tiles: {
@@ -45,7 +46,14 @@ k.addLevel(map, {
       "floor"
     ]
   }
-})
+});
 
 const player: GameObj = createPlayer(k);
 const ak = createAk(k, player);
+
+const enemy = createEnemy(k, level);
+enemy.onUpdate(() => {
+  if(enemy.action === 'pursuit') {
+    enemy.moveTo(player.pos, 200);
+  };
+});
