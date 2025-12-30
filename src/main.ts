@@ -5,9 +5,10 @@ import { createAk } from "./Weapons/ak";
 import { map } from './Levels/testLevel';
 
 const k = kaplay({
-  width: 1000,
-  height: 800,
-  letterbox: true,
+  // width: 1000,
+  // height: 800,
+  // letterbox: true,
+  background: '#000000'
 });
 
 k.loadRoot("./"); // A good idea for Itch.io publishing later
