@@ -6,9 +6,6 @@ import { map } from './Levels/testLevel';
 import { createEnemy } from "./Entities/Enemy";
 
 const k = kaplay({
-  // width: 1000,
-  // height: 800,
-  // letterbox: true,
   background: '#000000'
 });
 
@@ -51,8 +48,12 @@ const level = k.addLevel(map, {
 const player: GameObj = createPlayer(k);
 const ak = createAk(k, player);
 
-const enemy = createEnemy(k, level);
-enemy.onUpdate(() => {
+createEnemy(k, level, [400,400]);
+createEnemy(k, level, [600,600]);
+createEnemy(k, level, [800,200]);
+createEnemy(k, level, [1000,400]);
+createEnemy(k, level, [700,200]);
+k.onUpdate('enemy', (enemy: GameObj) => {
   if(enemy.action === 'pursuit') {
     enemy.moveTo(player.pos, 200);
   };

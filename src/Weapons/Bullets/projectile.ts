@@ -1,7 +1,21 @@
 import { KAPLAYCtxT, GameObj, Vec2 } from "kaplay";
 
-export function createProjectile(k: KAPLAYCtxT, gun: GameObj, dir: Vec2, rotation: number) {
+
+export function createProjectile(k: KAPLAYCtxT, gun: GameObj, dir: Vec2, rotation: number, damage: number) {
   k.loadSprite('projectile', 'sprites/Weapons/projectile.png');
+  k.loadSprite('hexagon', 'sprites/Textures/hexagon.png');
+  function createParticles(pos: Vec2, dir: Vec2, count: number = 10, color = k.YELLOW) {
+    for (let i = 0; i < count; i++) {
+      k.add([
+        k.pos(pos),
+        k.rect(5, 5),
+        k.color(color),
+        k.opacity(k.rand(0.5, 1)),
+        k.lifespan(k.rand(0.3, 0.5)),
+        k.move(k.rand(k.vec2(-200, -200), k.vec2(200, 200)).angle(), k.rand(k.vec2(-200, -200), k.vec2(200, 200)).angle()),
+      ])
+    }
+  }
 
   const projectile = k.add([
     k.sprite('projectile'),
@@ -11,7 +25,48 @@ export function createProjectile(k: KAPLAYCtxT, gun: GameObj, dir: Vec2, rotatio
     k.offscreen({ destroy: true}),
     k.rotate(rotation),
     k.anchor(k.vec2(-5, Math.abs(gun.angle) > 90 ? -1 : 1)),
+    {
+      damage: damage,
+    },
+    'projectile',
   ]);
+
+  projectile.onCollide((obj: GameObj) => {
+    if (obj.tags.includes('enemy')) {
+      obj.hp -= damage;
+      projectile.destroy();
+    };
+    if(obj.tags.includes('wall')) {
+      projectile.destroy();
+    };
+  });
+
+  projectile.onDestroy(() => {
+
+    // createParticles(projectile.pos, dir, 15);
+    const splatter = k.add([
+      k.particles({
+        max: 5,
+        speed: [300, 350],
+        lifeTime: [0.3, 0.5],
+        colors: [k.WHITE],
+        opacities: [1.0, 0.0],
+        angle: [0, 180],
+        texture: k.getSprite('hexagon').data.tex,
+        quads: [k.getSprite('hexagon').data.frames[0]],
+      }, {
+        position:projectile.pos,
+        lifetime: 0.5,
+        rate: 0,
+        direction: dir.scale(-1).angle(),
+        spread: 30,
+      }),
+    ]);
+    splatter.emit(10);
+    splatter.onEnd(() => {
+      k.destroy(splatter);
+    });
+  });
 
   return projectile;
 }

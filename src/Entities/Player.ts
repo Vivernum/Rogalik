@@ -43,7 +43,7 @@ export function createPlayer(k: KAPLAYCtxT) {
 
   player.onUpdate(() => {
     k.setCamPos(player.pos);
-    k.setCamScale(1.8);
+    k.setCamScale(1.5);
     k.setCamRot(0);
 
     // damage on some types of floors

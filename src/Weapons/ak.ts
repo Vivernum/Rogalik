@@ -15,6 +15,7 @@ export function createAk(k: KAPLAYCtxT, player: GameObj) {
     {
       isEquipped: false,
       owner: null,
+      shotsCount: 0,
 
       equip(player: GameObj) {
         if(this.isEquipped) return;
@@ -41,11 +42,16 @@ export function createAk(k: KAPLAYCtxT, player: GameObj) {
         });
         
         gun.onMouseDown(() => {
-          if(damageTimer > 0.3) {
+          if(damageTimer >= 0.3) {
             damageTimer = 0;
-            const dir = k.toWorld(k.mousePos()).sub(player.pos).unit().scale(2000);
-            const projectile = createProjectile(k, gun, dir, gunAngle);
-          };
+            if (gun.shotsCount === 0) {
+              const dir = k.toWorld(k.mousePos()).sub(player.pos).unit().scale(2000);
+              const projectile = createProjectile(k, gun, dir, gunAngle, 20);
+              gun.shotsCount++;
+            }
+          } else {
+            gun.shotsCount = 0;
+          }
         });
 
       },
