@@ -8,7 +8,7 @@ export function createEnemy(k: KAPLAYCtxT, l: GameObj<PosComp | LevelComp>, pos:
     k.pos(pos[0], pos[1]),
     k.health(100),
     k.opacity(1),
-    k.sentry({include: 'player'}, {
+    k.sentry({include: 'player',}, {
       lineOfSight: true,
       raycastExclude: ['enemy'],
       direction: k.vec2(-1, 1),
@@ -21,7 +21,7 @@ export function createEnemy(k: KAPLAYCtxT, l: GameObj<PosComp | LevelComp>, pos:
       action: 'patrol',
 
       add() {
-        this.onObjectsSpotted(obj => {
+        this.onObjectsSpotted((obj: GameObj) => {
           const playerSeen = obj.some(o => o.is('player'));
           if(playerSeen) {
             enemy.action = 'pursuit';

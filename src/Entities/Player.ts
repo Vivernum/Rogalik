@@ -1,20 +1,16 @@
-import { KAPLAYCtxT, Vec2 } from "kaplay";
+import { KAPLAYCtxT } from "kaplay";
 
 export function createPlayer(k: KAPLAYCtxT) {
-  const UP: Vec2 = k.vec2(0, -1);
-  const DOWN: Vec2 = k.vec2(0, 1);
-  const LEFT: Vec2 = k.vec2(-1, 0);
-  const RIGHT: Vec2 = k.vec2(1, 0);
 
   const dirs = {
-    'w': UP,
-    'd': RIGHT,
-    's': DOWN,
-    'a': LEFT,
-    'left': LEFT,
-    'right': RIGHT,
-    'up': UP,
-    'down': DOWN,
+    'w': k.UP,
+    'd': k.RIGHT,
+    's': k.DOWN,
+    'a': k.LEFT,
+    'left': k.LEFT,
+    'right': k.RIGHT,
+    'up': k.UP,
+    'down': k.DOWN,
   };
 
   const SPEED: number = 250;

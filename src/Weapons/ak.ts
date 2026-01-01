@@ -10,7 +10,7 @@ export function createAk(k: KAPLAYCtxT, player: GameObj) {
     k.area(),
     k.rotate(0),
     k.pos(330,200),
-    k.anchor(k.vec2(-1,0)),
+    k.anchor(k.vec2(-1, 0)),
     'weapon',
     {
       isEquipped: false,
@@ -19,8 +19,9 @@ export function createAk(k: KAPLAYCtxT, player: GameObj) {
 
       equip(player: GameObj) {
         if(this.isEquipped) return;
-
+        
         this.use(k.follow(player));
+        this.isEquipped = true;
 
         this.trigger('equipped', {player});
       },
@@ -31,40 +32,53 @@ export function createAk(k: KAPLAYCtxT, player: GameObj) {
         let gunAngle: number | null = null;
         let damageTimer = 0.3;
 
-        gun.onUpdate(() => {
+        this.onUpdate(() => {
+          if (!this.isEquipped) return;
           damageTimer += k.dt();
         });
 
-        gun.onMouseMove(() => {
+        this.onMouseMove(() => {
+          if (!this.isEquipped) return;
           gunAngle = k.toWorld(k.mousePos()).sub(player.pos).angle();
-          gun.angle = gunAngle;
-          gun.flipY = Math.abs(gun.angle) > 90;
+          this.angle = gunAngle;
+          this.flipY = Math.abs(this.angle) > 90;
         });
         
-        gun.onMouseDown(() => {
+        this.onMouseDown(() => {
+          if (!this.isEquipped) return;
           if(damageTimer >= 0.3) {
             damageTimer = 0;
-            if (gun.shotsCount === 0) {
+            if (this.shotsCount === 0) {
               const dir = k.toWorld(k.mousePos()).sub(player.pos).unit().scale(2000);
-              const projectile = createProjectile(k, gun, dir, gunAngle, 20);
-              gun.shotsCount++;
+              createProjectile(k, this, dir, gunAngle, 20);
+              this.shotsCount++;
             }
           } else {
-            gun.shotsCount = 0;
+            this.shotsCount = 0;
           }
         });
 
       },
+      
+      unEquip() {
+        if (!this.isEquipped) return;
+        this.isEquipped = false;
+        this.unuse('follow');
+      },
     },
+
   ]);
 
-  gun.onCollide('player', (player) => {
+  gun.onCollide('player', (player: GameObj) => {
     gun.onKeyDown('f', () => {
       gun.equip(player);
       gun.addMouseTracking(player);
+    });
+
+    gun.onKeyDown('q', () => {
+      gun.unEquip();
     })
   });
-  
 
   return gun;
 };

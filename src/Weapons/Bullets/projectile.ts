@@ -13,7 +13,7 @@ export function createProjectile(k: KAPLAYCtxT, gun: GameObj, dir: Vec2, rotatio
         k.opacity(k.rand(0.5, 1)),
         k.lifespan(k.rand(0.3, 0.5)),
         k.move(k.rand(k.vec2(-200, -200), k.vec2(200, 200)).angle(), k.rand(k.vec2(-200, -200), k.vec2(200, 200)).angle()),
-      ])
+      ]);
     }
   }
 
@@ -43,29 +43,29 @@ export function createProjectile(k: KAPLAYCtxT, gun: GameObj, dir: Vec2, rotatio
 
   projectile.onDestroy(() => {
 
-    // createParticles(projectile.pos, dir, 15);
-    const splatter = k.add([
-      k.particles({
-        max: 5,
-        speed: [300, 350],
-        lifeTime: [0.3, 0.5],
-        colors: [k.WHITE],
-        opacities: [1.0, 0.0],
-        angle: [0, 180],
-        texture: k.getSprite('hexagon').data.tex,
-        quads: [k.getSprite('hexagon').data.frames[0]],
-      }, {
-        position:projectile.pos,
-        lifetime: 0.5,
-        rate: 0,
-        direction: dir.scale(-1).angle(),
-        spread: 30,
-      }),
-    ]);
-    splatter.emit(10);
-    splatter.onEnd(() => {
-      k.destroy(splatter);
-    });
+    createParticles(projectile.pos, dir, 15);
+    // const splatter = k.add([
+    //   k.particles({
+    //     max: 5,
+    //     speed: [300, 350],
+    //     lifeTime: [0.3, 0.5],
+    //     colors: [k.WHITE],
+    //     opacities: [1.0, 0.0],
+    //     angle: [0, 180],
+    //     texture: k.getSprite('hexagon').data.tex,
+    //     quads: [k.getSprite('hexagon').data.frames[0]],
+    //   }, {
+    //     position:projectile.pos,
+    //     lifetime: 0.5,
+    //     rate: 0,
+    //     direction: dir.scale(-1).angle(),
+    //     spread: 30,
+    //   }),
+    // ]);
+    // splatter.emit(10);
+    // splatter.onEnd(() => {
+    //   k.destroy(splatter);
+    // });
   });
 
   return projectile;
