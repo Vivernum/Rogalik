@@ -1,9 +1,37 @@
-import { KAPLAYCtxT, GameObj, Vec2 } from "kaplay";
-import { createParticles } from "../../utils/collisionParticles";
+import { KAPLAYCtxT, GameObj, Vec2, Texture, Quad, SpriteData, Asset } from "kaplay";
 
-export function createProjectile(k: KAPLAYCtxT, gun: GameObj, dir: Vec2, rotation: number, damage: number) {
+type TParticlesData = {
+  texture: Texture;
+  quad: Quad[];
+};
+
+let cachedParticlesData: TParticlesData | null = null;
+
+export function createProjectile
+(
+  k: KAPLAYCtxT,
+  gun: GameObj,
+  dir: Vec2,
+  rotation: number,
+  damage: number
+) {
   k.loadSprite('projectile', 'sprites/Weapons/projectile.png');
-  k.loadSprite('hexagon', 'sprites/Textures/hexagon.png');
+
+  let particlesData: Asset<SpriteData>;
+
+  // caching so there is no need to load the sprite every time
+  // and we don't get errors
+  if (!cachedParticlesData) {
+    particlesData = k.loadSprite('particle', 'sprites/Textures/projectileParticles.png');
+    particlesData.onLoad(() => {
+      const hexagonSprite = k.getSprite('particle');
+      
+      cachedParticlesData = {
+        texture: hexagonSprite.data.tex,
+        quad: [hexagonSprite.data.frames[0]]
+      };
+    });
+  };
 
   const projectile = k.add([
     k.sprite('projectile'),
@@ -15,46 +43,51 @@ export function createProjectile(k: KAPLAYCtxT, gun: GameObj, dir: Vec2, rotatio
     k.anchor(k.vec2(-5, Math.abs(gun.angle) > 90 ? -1 : 1)),
     {
       damage: damage,
+      lastPos: null,
     },
     'projectile',
   ]);
 
   projectile.onCollide((obj: GameObj) => {
-    if (obj.tags.includes('enemy')) {
+    if (obj.tags.includes('enemy') || obj.tags.includes('wall')) {
       obj.hp -= damage;
-      projectile.destroy();
-    };
-    if(obj.tags.includes('wall')) {
+      // @FIXME: probably this cause particles appear in 0:0 if
+      // collision appears to be out of the screen
+      const collisionCenter = k.vec2(
+        (projectile.pos.x + obj.pos.x) / 2,
+        (projectile.pos.y + obj.pos.y) / 2
+      );
+      projectile.lastPos = collisionCenter;
       projectile.destroy();
     };
   });
 
   projectile.onDestroy(() => {
-
-    createParticles(k, projectile.pos, dir, 15);
-    // const splatter = k.add([
-    //   k.particles({
-    //     max: 5,
-    //     speed: [300, 350],
-    //     lifeTime: [0.3, 0.5],
-    //     colors: [k.WHITE],
-    //     opacities: [1.0, 0.0],
-    //     angle: [0, 180],
-    //     texture: k.getSprite('hexagon').data.tex,
-    //     quads: [k.getSprite('hexagon').data.frames[0]],
-    //   }, {
-    //     position:projectile.pos,
-    //     lifetime: 0.5,
-    //     rate: 0,
-    //     direction: dir.scale(-1).angle(),
-    //     spread: 30,
-    //   }),
-    // ]);
-    // splatter.emit(10);
-    // splatter.onEnd(() => {
-    //   k.destroy(splatter);
-    // });
+    if (cachedParticlesData) {
+      const splatter = k.add([
+        k.particles({
+          max: 15,
+          speed: [100, 150],
+          lifeTime: [0.3, 0.5],
+          colors: [k.WHITE],
+          opacities: [1.0, 0.8],
+          angle: [0, 180],
+          texture: cachedParticlesData.texture,
+          quads: cachedParticlesData.quad,
+        }, {
+          position:projectile.lastPos,
+          lifetime: 0.5,
+          rate: 0,
+          direction: dir.scale(-1).angle(),
+          spread: 40,
+        }),
+      ]);
+      splatter.emit(10);
+      splatter.onEnd(() => {
+        k.destroy(splatter);
+      });
+    } else return;
   });
 
   return projectile;
-}
+};
