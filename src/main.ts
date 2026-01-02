@@ -46,7 +46,7 @@ const level = k.addLevel(map, {
 });
 
 const player: GameObj = createPlayer(k);
-const ak = createAk(k, player);
+const ak = createAk(k);
 
 const info = k.add([
   k.fixed(),
@@ -58,12 +58,11 @@ const info = k.add([
   k.color(k.WHITE),
 ]);
 
-const text = k.add([
+const text = info.add([
   k.pos(30, 30),
   k.fixed(),
   k.text(`X - ${player.pos.x}\nY - ${player.pos.y}`, {
     size: 20,
-    align: "center",
   }),
   k.color(k.BLACK),
 ]);

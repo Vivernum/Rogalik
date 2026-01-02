@@ -1,7 +1,7 @@
 import { GameObj, KAPLAYCtxT } from "kaplay";
 import { createProjectile } from './Bullets/projectile';
 
-export function createAk(k: KAPLAYCtxT, player: GameObj) {
+export function createAk(k: KAPLAYCtxT) {
   k.loadSprite("ak", "sprites/Weapons/ak.png");
   k.loadSprite("hexagon", "sprites/Textures/hexagon.png");
 
@@ -66,6 +66,7 @@ export function createAk(k: KAPLAYCtxT, player: GameObj) {
         this.isEquipped = false;
         this.owner = null;
         this.unuse('follow');
+        Math.abs(this.angle) > 90 ? this.angle = 180 : this.angle = 0;
       },
     },
 
