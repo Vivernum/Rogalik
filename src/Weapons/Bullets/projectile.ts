@@ -1,21 +1,9 @@
 import { KAPLAYCtxT, GameObj, Vec2 } from "kaplay";
-
+import { createParticles } from "../../utils/collisionParticles";
 
 export function createProjectile(k: KAPLAYCtxT, gun: GameObj, dir: Vec2, rotation: number, damage: number) {
   k.loadSprite('projectile', 'sprites/Weapons/projectile.png');
   k.loadSprite('hexagon', 'sprites/Textures/hexagon.png');
-  function createParticles(pos: Vec2, dir: Vec2, count: number = 10, color = k.YELLOW) {
-    for (let i = 0; i < count; i++) {
-      k.add([
-        k.pos(pos),
-        k.rect(5, 5),
-        k.color(color),
-        k.opacity(k.rand(0.5, 1)),
-        k.lifespan(k.rand(0.3, 0.5)),
-        k.move(k.rand(k.vec2(-200, -200), k.vec2(200, 200)).angle(), k.rand(k.vec2(-200, -200), k.vec2(200, 200)).angle()),
-      ]);
-    }
-  }
 
   const projectile = k.add([
     k.sprite('projectile'),
@@ -43,7 +31,7 @@ export function createProjectile(k: KAPLAYCtxT, gun: GameObj, dir: Vec2, rotatio
 
   projectile.onDestroy(() => {
 
-    createParticles(projectile.pos, dir, 15);
+    createParticles(k, projectile.pos, dir, 15);
     // const splatter = k.add([
     //   k.particles({
     //     max: 5,

@@ -22,6 +22,7 @@ export function createAk(k: KAPLAYCtxT, player: GameObj) {
         
         this.use(k.follow(player));
         this.isEquipped = true;
+        this.onwer = player;
 
         this.trigger('equipped', {player});
       },
@@ -63,6 +64,7 @@ export function createAk(k: KAPLAYCtxT, player: GameObj) {
       unEquip() {
         if (!this.isEquipped) return;
         this.isEquipped = false;
+        this.owner = null;
         this.unuse('follow');
       },
     },
