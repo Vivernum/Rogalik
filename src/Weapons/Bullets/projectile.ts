@@ -49,7 +49,12 @@ export function createProjectile
   ]);
 
   projectile.onCollide((obj: GameObj) => {
-    if (obj.tags.includes('enemy') || obj.tags.includes('wall')) {
+    if
+    (
+      obj.tags.includes('enemy') ||
+      obj.tags.includes('wall') || 
+      obj.tags.includes('obstacle')
+    ) {
       obj.hp -= damage;
       // @FIXME: probably this cause particles appear in 0:0 if
       // collision appears to be out of the screen

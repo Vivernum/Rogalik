@@ -51,13 +51,28 @@ function createColliders(k: KAPLAYCtxT, map: string[]) {
         const levelX = x * 50;
         const levelY = y * 50;
 
-        k.add([
+        const obstacle = k.add([
           k.sprite('wallH'),
+          k.opacity(1),
+          k.health(50),
           k.pos(levelX, levelY),
           k.area(),
           k.body({ isStatic: true }),
           'obstacle',
         ]);
+
+        obstacle.onHurt((damage: number) => {
+          obstacle.opacity -= damage * 0.01;
+        });
+
+        obstacle.onDeath(() => {
+          k.add([
+            k.pos(obstacle.pos),
+            k.sprite('floor'),
+            k.z(-Infinity),
+          ])
+          obstacle.destroy();
+        });
       };
     };
   };

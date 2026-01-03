@@ -1,4 +1,4 @@
-import { GameObj, KAPLAYCtxT } from "kaplay";
+import { GameObj, KAPLAYCtxT, KEventController } from "kaplay";
 import { createProjectile } from './Bullets/projectile';
 
 export function createAk(k: KAPLAYCtxT) {
@@ -14,6 +14,7 @@ export function createAk(k: KAPLAYCtxT) {
     'weapon',
     {
       isEquipped: false,
+      isPickable: false,
       owner: null,
       shotsCount: 0,
 
@@ -73,14 +74,21 @@ export function createAk(k: KAPLAYCtxT) {
   ]);
 
   gun.onCollide('player', (player: GameObj) => {
+    gun.isPickable = true;
     gun.onKeyDown('f', () => {
-      gun.equip(player);
-      gun.addMouseTracking(player);
+      if (gun.isPickable) {
+        gun.equip(player);
+        gun.addMouseTracking(player);
+      }
     });
 
     gun.onKeyDown('q', () => {
       gun.unEquip();
-    })
+    });
+  });
+
+  gun.onCollideEnd('player', () => {
+    gun.isPickable = false;
   });
 
   return gun;
