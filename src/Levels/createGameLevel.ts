@@ -37,12 +37,12 @@ export function createGameLevel(k: KAPLAYCtxT, map: string[]) {
     },
   });
 
-  createColliders(k, map);
+  createObstacles(k, map);
 
   return level;
 };
 
-function createColliders(k: KAPLAYCtxT, map: string[]) {
+function createObstacles(k: KAPLAYCtxT, map: string[]) {
   for (let y = 0; y < map.length; y++) {
     for (let x = 0; x < map[y].length; x++) {
       const tile = map[y][x];

@@ -1,5 +1,5 @@
-import { KAPLAYCtxT, GameObj, PosComp, LevelComp } from "kaplay";
-import { createHelthBar } from "../utils/enemyHealthBar";
+import { KAPLAYCtxT, GameObj, PosComp, LevelComp, HealthComp } from "kaplay";
+import { createHelthBar } from "../utils/healthBar";
 
 export function createEnemy(k: KAPLAYCtxT, l: GameObj<PosComp | LevelComp>, [enemyStartingPositionX, enemyStartingPositionY]: number[]) {
   k.loadSprite('enemy', 'sprites/Entities/dio.png');
@@ -26,11 +26,12 @@ export function createEnemy(k: KAPLAYCtxT, l: GameObj<PosComp | LevelComp>, [ene
     {
       speed: 150,
       prey: null,
+      attackRange: 80,
       sightRange: 300,
       isInSrartPosition: false,
       attackCooldown: 1,
       lastAttackTime: 0,
-      attackDamage: 20,
+      attackDamage: 10,
       action: 'patrol',
 
       add() {
@@ -44,8 +45,13 @@ export function createEnemy(k: KAPLAYCtxT, l: GameObj<PosComp | LevelComp>, [ene
       },
 
       update() {
+        this.lastAttackTime += k.dt();
         // if target exists only then we switch behaviour else we get error which is bad
         if(this.prey) {
+          const player: GameObj<PosComp> = this.prey;
+          const distance = enemy.pos.dist(player.pos);
+
+
           // if sentry is not in x0y0 position it considered to wandering seeking for player
           if
           (
@@ -79,7 +85,21 @@ export function createEnemy(k: KAPLAYCtxT, l: GameObj<PosComp | LevelComp>, [ene
               break;
             };
             case 'pursuit': {
-              this.pursuitBehavior(this.prey);
+              if (distance <= this.attackRange) {
+                this.action = 'attack';
+              } else if (distance > this.sightRange) {
+                this.action = 'return';
+              } else {
+                this.pursuitBehavior(this.prey);
+              };
+              break;
+            };
+            case 'attack': {
+              if (distance > this.attackRange) {
+                this.action = 'pursuit';
+              } else {
+                this.attackBehahivor(this.prey);
+              };
               break;
             };
             case 'return': {
@@ -89,26 +109,41 @@ export function createEnemy(k: KAPLAYCtxT, l: GameObj<PosComp | LevelComp>, [ene
           };
         };
       },
-
+      
+      
       patrolBehavior() {
         
       },
-
+      
       pursuitBehavior(player: GameObj) {
         this.moveTo(player.pos, this.speed);
       },
-// нужно будет добавить такие варианты как returning и тд, чтобы оптимизировать операции здесь
+      // нужно будет добавить такие варианты как returning и тд, чтобы оптимизировать операции здесь
       returnBehavior() {
         this.moveTo(enemyStartingPositionX, enemyStartingPositionY, this.speed);
       },
+      attackBehahivor(player: GameObj<PosComp | HealthComp>) {
+        if (this.lastAttackTime >= this.attackCooldown) {
+          player.hp -= this.attackDamage;
+          this.attackAnimation();
+          this.lastAttackTime = 0;
+        };
+      },
+    
+      attackAnimation() {
+    
+      },
+
+
     },
   ]);
-
-  const [healthBar, healthBarFill] = createHelthBar(k, enemy);
+  
+  const healthBarFill = createHelthBar(k, enemy, k.vec2(-55, -40));
 
   enemy.add([
     k.sprite('sword'),
     k.anchor(k.vec2(0, 0)),
+    k.rotate(0),
   ])
 
   enemy.onHurt((damage: number) => {

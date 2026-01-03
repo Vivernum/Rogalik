@@ -1,13 +1,13 @@
-import { GameObj, KAPLAYCtxT } from "kaplay";
+import { GameObj, KAPLAYCtxT, Vec2 } from "kaplay";
 
 
-export function createHelthBar(k: KAPLAYCtxT, enemy: GameObj) {
+export function createHelthBar(k: KAPLAYCtxT, enemy: GameObj, pos: Vec2) {
   const healthBar = enemy.add([
     k.rect(60, 10, {
       radius: 10,
       fill: false,
     }),
-    k.pos(k.vec2(-55, -40)),
+    k.pos(pos),
     k.outline(3, k.BLACK),
   ]);
 
@@ -20,5 +20,5 @@ export function createHelthBar(k: KAPLAYCtxT, enemy: GameObj) {
     k.color(k.RED),
   ]);
 
-  return [healthBar, healthBarFill];
+  return  healthBarFill;
 }

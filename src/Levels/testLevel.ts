@@ -14,5 +14,6 @@ export const map = [
   "h     o                      h",
   "h   ooo                      h",
   "h                            h",
+  "h                            h",
   "hwwwwwwwwwwwwwwwwwwwwwwwwwwwwh",
 ];
