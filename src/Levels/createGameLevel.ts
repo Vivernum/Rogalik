@@ -29,11 +29,6 @@ export function createGameLevel(k: KAPLAYCtxT, map: string[]) {
         "lava",
         'dangerousFloor',
       ],
-      " ": () => [
-        k.sprite("floor"),
-        k.area(),
-        "floor"
-      ],
     },
   });
 
@@ -66,11 +61,6 @@ function createObstacles(k: KAPLAYCtxT, map: string[]) {
         });
 
         obstacle.onDeath(() => {
-          k.add([
-            k.pos(obstacle.pos),
-            k.sprite('floor'),
-            k.z(-Infinity),
-          ])
           obstacle.destroy();
         });
       };

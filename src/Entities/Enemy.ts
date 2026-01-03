@@ -1,7 +1,7 @@
 import { KAPLAYCtxT, GameObj, PosComp, LevelComp, HealthComp } from "kaplay";
 import { createHelthBar } from "../utils/healthBar";
 
-export function createEnemy(k: KAPLAYCtxT, l: GameObj<PosComp | LevelComp>, [enemyStartingPositionX, enemyStartingPositionY]: number[]) {
+export function createEnemy(k: KAPLAYCtxT, [enemyStartingPositionX, enemyStartingPositionY]: number[]) {
   k.loadSprite('enemy', 'sprites/Entities/dio.png');
   k.loadSprite('sword', 'sprites/Weapons/sword.png');
 
@@ -16,8 +16,8 @@ export function createEnemy(k: KAPLAYCtxT, l: GameObj<PosComp | LevelComp>, [ene
     }, {
       lineOfSight: true,
       raycastExclude: ['enemy', 'weapon', 'projectile', 'floor'],
-      direction: k.vec2(-1, 1),
-      fieldOfView: 90,
+      direction: k.vec2(-1, -1),
+      fieldOfView: 200,
       checkFrequency: 0.5,
     }),
     k.area(),
@@ -26,7 +26,7 @@ export function createEnemy(k: KAPLAYCtxT, l: GameObj<PosComp | LevelComp>, [ene
     {
       speed: 150,
       prey: null,
-      attackRange: 80,
+      attackRange: 55,
       sightRange: 300,
       isInSrartPosition: false,
       attackCooldown: 1,
