@@ -20,13 +20,15 @@ export function createPlayer(k: KAPLAYCtxT) {
 
   const player = k.add([
     k.sprite("jotaro"),
-      k.pos(100, 100),
-      k.health(100, 100),
-      k.anchor(k.vec2(0, 0)),
-      k.opacity(1),
-      k.area(),
-      k.body(),
-      'player',
+    k.pos(100, 100),
+    k.health(100, 100),
+    k.anchor('center'),
+    k.opacity(1),
+    k.area({
+      shape: new k.Circle(k.vec2(0, 0), 20),
+    }),
+    k.body(),
+    'player',
   ]);
 
   for (const key in dirs) {
@@ -68,7 +70,7 @@ export function createPlayer(k: KAPLAYCtxT) {
   //   dangerousFloorCollisionCount--;
   // })
 
-  const healthBarFill = createHelthBar(k, player, k.vec2(-30, -40));
+  const healthBarFill = createHelthBar(k, player, k.vec2(0, -35));
 
   player.onHurt((damage: number) => {
     healthBarFill.width = (player.hp / player.maxHP) * 60;

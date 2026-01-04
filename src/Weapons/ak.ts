@@ -7,10 +7,12 @@ export function createAk(k: KAPLAYCtxT) {
 
   const gun = k.add([
     k.sprite("ak"),
-    k.area(),
+    k.area({
+      shape: new k.Rect(k.vec2(0.0), 50, 20),
+    }),
     k.rotate(0),
     k.pos(330,200),
-    k.anchor(k.vec2(-1, 0)),
+    k.anchor('center'),
     'weapon',
     {
       isEquipped: false,
@@ -22,8 +24,9 @@ export function createAk(k: KAPLAYCtxT) {
         if(this.isEquipped) return;
         
         this.use(k.follow(player));
+        gun.anchor = k.vec2(-1, 0);
         this.isEquipped = true;
-        this.onwer = player;
+        this.owner = player;
 
         this.trigger('equipped', {player});
       },
@@ -67,6 +70,7 @@ export function createAk(k: KAPLAYCtxT) {
         this.isEquipped = false;
         this.owner = null;
         this.unuse('follow');
+        this.anchor = 'center';
         Math.abs(this.angle) > 90 ? this.angle = 180 : this.angle = 0;
       },
     },

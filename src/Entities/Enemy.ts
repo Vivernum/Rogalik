@@ -8,25 +8,26 @@ export function createEnemy(k: KAPLAYCtxT, [enemyStartingPositionX, enemyStartin
   const enemy = k.add([
     k.sprite('enemy'),
     k.pos(enemyStartingPositionX, enemyStartingPositionY),
-    k.anchor(k.vec2(1, 0)),
+    k.anchor(k.vec2(0, 0)),
     k.health(100, 100),
     k.sentry({
       include: 'player',
-      distanceOp: 'near',
     }, {
       lineOfSight: true,
-      raycastExclude: ['enemy', 'weapon', 'projectile', 'floor'],
-      direction: k.vec2(-1, -1),
-      fieldOfView: 200,
+      raycastExclude: ['enemy', 'weapon', 'projectile'],
+      direction: k.vec2(1, 1),
+      fieldOfView: 359,
       checkFrequency: 0.5,
     }),
-    k.area(),
+    k.area({
+      shape: new k.Circle(k.vec2(0, 0), 20),
+    }),
     k.body(),
     'enemy',
     {
       speed: 150,
       prey: null,
-      attackRange: 55,
+      attackRange: 50,
       sightRange: 300,
       isInSrartPosition: false,
       attackCooldown: 1,
@@ -53,8 +54,7 @@ export function createEnemy(k: KAPLAYCtxT, [enemyStartingPositionX, enemyStartin
 
 
           // if sentry is not in x0y0 position it considered to wandering seeking for player
-          if
-          (
+          if (
             enemy.pos.x !== enemyStartingPositionX &&
             enemy.pos.y !== enemyStartingPositionY
           ) {
@@ -63,15 +63,13 @@ export function createEnemy(k: KAPLAYCtxT, [enemyStartingPositionX, enemyStartin
             this.isInSrartPosition = true
           };
 
-          if
-          (
+          if (
             !this.hasLineOfSight(this.prey) &&
             !this.isInSrartPosition &&
             this.action !== 'return'
           ) {
             this.action = 'return';
-          } else if 
-          (
+          } else if  (
             !this.hasLineOfSight(this.prey) &&
             this.isInSrartPosition &&
             this.action !== 'patrol'
@@ -138,13 +136,15 @@ export function createEnemy(k: KAPLAYCtxT, [enemyStartingPositionX, enemyStartin
     },
   ]);
   
-  const healthBarFill = createHelthBar(k, enemy, k.vec2(-55, -40));
+  const healthBarFill = createHelthBar(k, enemy, k.vec2(0, -35));
 
   enemy.add([
     k.sprite('sword'),
-    k.anchor(k.vec2(0, 0)),
-    k.rotate(0),
-  ])
+    k.pos(k.vec2(0, 0)),
+    k.anchor(k.vec2(-1, -1)),
+    k.rotate(-45),
+    k.area(),
+  ]);
 
   enemy.onHurt((damage: number) => {
     healthBarFill.width = (enemy.hp / enemy.maxHP) * 60;

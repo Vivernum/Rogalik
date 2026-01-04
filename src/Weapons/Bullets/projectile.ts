@@ -6,6 +6,7 @@ type TParticlesData = {
 };
 
 let cachedParticlesData: TParticlesData | null = null;
+let cachedProjectile: Asset<SpriteData> | null = null;
 
 export function createProjectile
 (
@@ -15,7 +16,13 @@ export function createProjectile
   rotation: number,
   damage: number
 ) {
-  k.loadSprite('projectile', 'sprites/Weapons/projectile.png');
+  if (!cachedProjectile) {
+    let projectileData = k.loadSprite('projectile', 'sprites/Weapons/projectile.png');
+  
+    projectileData.onLoad(() => {
+      cachedProjectile = projectileData;
+    });
+  };
 
   let particlesData: Asset<SpriteData>;
 
@@ -34,7 +41,7 @@ export function createProjectile
   };
 
   const projectile = k.add([
-    k.sprite('projectile'),
+    k.sprite(cachedProjectile ? cachedProjectile : k.getSprite('projectile')),
     k.pos(gun.pos),
     k.area(),
     k.move(dir, 400),

@@ -7,8 +7,15 @@ import { createEnemy } from "./Entities/Enemy";
 import { createGameLevel } from "./Levels/createGameLevel";
 
 const k = kaplay({
-  background: 'black',
+  background: 'white',
 });
+
+k.debug.inspect = true;
+
+k.onKeyPress('p', () => {
+  k.debug.inspect = !k.debug.inspect;
+});
+
 
 k.loadRoot("./"); // A good idea for Itch.io publishing later
 
