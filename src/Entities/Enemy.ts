@@ -33,7 +33,12 @@ export function createEnemy(k: KAPLAYCtxT, [enemyStartingPositionX, enemyStartin
       attackCooldown: 1,
       lastAttackTime: 0,
       attackDamage: 10,
+      attackDuration: 0.5,
+      isAttackActive: false,
       action: 'patrol',
+      sword: null,
+      swordDirection: k.vec2(0, 0),
+      attackAngle: 0,
 
       add() {
         this.onObjectsSpotted((objects: GameObj[]) => {
@@ -45,6 +50,7 @@ export function createEnemy(k: KAPLAYCtxT, [enemyStartingPositionX, enemyStartin
         });
       },
 
+
       update() {
         this.lastAttackTime += k.dt();
         // if target exists only then we switch behaviour else we get error which is bad
@@ -52,11 +58,12 @@ export function createEnemy(k: KAPLAYCtxT, [enemyStartingPositionX, enemyStartin
           const player: GameObj<PosComp> = this.prey;
           const distance = enemy.pos.dist(player.pos);
 
-
+          this.direction = this.prey.pos.sub(this.pos).unit();
+          this.attackAngle = this.direction.angle();
           // if sentry is not in x0y0 position it considered to wandering seeking for player
           if (
-            enemy.pos.x !== enemyStartingPositionX &&
-            enemy.pos.y !== enemyStartingPositionY
+            this.pos.x !== enemyStartingPositionX &&
+            this.pos.y !== enemyStartingPositionY
           ) {
             this.isInSrartPosition = false
           } else {
@@ -115,36 +122,52 @@ export function createEnemy(k: KAPLAYCtxT, [enemyStartingPositionX, enemyStartin
       
       pursuitBehavior(player: GameObj) {
         this.moveTo(player.pos, this.speed);
+        this.sword.rotateTo(this.attackAngle + 60);
       },
       // нужно будет добавить такие варианты как returning и тд, чтобы оптимизировать операции здесь
       returnBehavior() {
         this.moveTo(enemyStartingPositionX, enemyStartingPositionY, this.speed);
+        this.sword.rotateTo(-45);
       },
       attackBehahivor(player: GameObj<PosComp | HealthComp>) {
         if (this.lastAttackTime >= this.attackCooldown) {
-          player.hp -= this.attackDamage;
-          this.attackAnimation();
-          this.lastAttackTime = 0;
+          this.isAttackActive = true;
+          k.tween(
+            this.sword.angle,
+            Math.abs(this.attackAngle) > 90 ? this.attackAngle - 30 : this.attackAngle + 30,
+            this.attackDuration,
+            (val) => this.sword!.angle = val,
+          ).then(() => {
+            k.tween(
+              this.sword!.angle,
+              Math.abs(this.attackAngle) > 90 ? this.attackAngle + 30 : this.attackAngle - 30,
+              this.attackDuration,
+              (val) => this.sword!.angle = val,
+            );
+            this.isAttackActive = false;
+          });
+            this.lastAttackTime = 0;
         };
       },
-    
-      attackAnimation() {
-    
-      },
-
 
     },
   ]);
   
   const healthBarFill = createHelthBar(k, enemy, k.vec2(0, -35));
 
-  enemy.add([
+  enemy.sword = enemy.add([
     k.sprite('sword'),
     k.pos(k.vec2(0, 0)),
     k.anchor(k.vec2(-1, -1)),
     k.rotate(-45),
     k.area(),
   ]);
+
+  enemy.sword.onCollide('player', (player: GameObj<HealthComp>) => {
+    if (enemy.isAttackActive) {
+      player.hp -= enemy.attackDamage;
+    } else return;
+  });
 
   enemy.onHurt((damage: number) => {
     healthBarFill.width = (enemy.hp / enemy.maxHP) * 60;

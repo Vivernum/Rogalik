@@ -10,7 +10,7 @@ const k = kaplay({
   background: 'white',
 });
 
-k.debug.inspect = true;
+k.debug.inspect = false;
 
 k.onKeyPress('p', () => {
   k.debug.inspect = !k.debug.inspect;
