@@ -1,5 +1,7 @@
-import { KAPLAYCtxT, GameObj, PosComp, LevelComp, HealthComp } from "kaplay";
+import { KAPLAYCtxT, GameObj, PosComp, HealthComp } from "kaplay";
 import { createHelthBar } from "../utils/healthBar";
+import { createParticles } from "../utils/collisionParticles";
+import { createCircularParticles } from "../utils/createCircularParticles";
 
 export function createEnemy(k: KAPLAYCtxT, [enemyStartingPositionX, enemyStartingPositionY]: number[]) {
   k.loadSprite('enemy', 'sprites/Entities/dio.png');
@@ -30,15 +32,14 @@ export function createEnemy(k: KAPLAYCtxT, [enemyStartingPositionX, enemyStartin
       attackRange: 50,
       sightRange: 300,
       isInSrartPosition: false,
-      attackCooldown: 1,
+      attackCooldown: 1.5,
       lastAttackTime: 0,
       attackDamage: 10,
-      attackDuration: 0.5,
-      isAttackActive: false,
+      attackDuration: 0.3,
       action: 'patrol',
-      sword: null,
       swordDirection: k.vec2(0, 0),
       attackAngle: 0,
+      collisionCount: 0,
 
       add() {
         this.onObjectsSpotted((objects: GameObj[]) => {
@@ -58,8 +59,8 @@ export function createEnemy(k: KAPLAYCtxT, [enemyStartingPositionX, enemyStartin
           const player: GameObj<PosComp> = this.prey;
           const distance = enemy.pos.dist(player.pos);
 
-          this.direction = this.prey.pos.sub(this.pos).unit();
-          this.attackAngle = this.direction.angle();
+          // this.swordDirection = this.prey.pos.sub(this.pos).unit();
+          // this.attackAngle = this.swordDirection.angle();
           // if sentry is not in x0y0 position it considered to wandering seeking for player
           if (
             this.pos.x !== enemyStartingPositionX &&
@@ -122,31 +123,43 @@ export function createEnemy(k: KAPLAYCtxT, [enemyStartingPositionX, enemyStartin
       
       pursuitBehavior(player: GameObj) {
         this.moveTo(player.pos, this.speed);
-        this.sword.rotateTo(this.attackAngle + 60);
       },
       // нужно будет добавить такие варианты как returning и тд, чтобы оптимизировать операции здесь
       returnBehavior() {
         this.moveTo(enemyStartingPositionX, enemyStartingPositionY, this.speed);
-        this.sword.rotateTo(-45);
       },
       attackBehahivor(player: GameObj<PosComp | HealthComp>) {
         if (this.lastAttackTime >= this.attackCooldown) {
-          this.isAttackActive = true;
           k.tween(
-            this.sword.angle,
-            Math.abs(this.attackAngle) > 90 ? this.attackAngle - 30 : this.attackAngle + 30,
+            0,
+            (this.attackRange + 20) / 2,
             this.attackDuration,
-            (val) => this.sword!.angle = val,
+            (radius: number) => {
+              hittingCircle.radius = radius;
+              hittingCircle.use(k.area({
+                shape: new k.Circle(k.vec2(0, 0), radius),
+              }));
+              if (radius === (this.attackRange + 20) / 2) {
+                createCircularParticles(k, enemy.pos, radius, 50, k.RED)
+              };
+            },
+            k.easings.linear,
           ).then(() => {
             k.tween(
-              this.sword!.angle,
-              Math.abs(this.attackAngle) > 90 ? this.attackAngle + 30 : this.attackAngle - 30,
+            (this.attackRange + 10) / 2,
+              0,
               this.attackDuration,
-              (val) => this.sword!.angle = val,
+              (radius: number) => {
+                hittingCircle.radius = radius;
+              },
+              k.easings.linear,
             );
-            this.isAttackActive = false;
+            hittingCircle.use(k.area({
+              shape: new k.Circle(k.vec2(0, 0), 0),
+            }));
           });
-            this.lastAttackTime = 0;
+          this.lastAttackTime = 0;
+          this.collisionCount = 0;
         };
       },
 
@@ -155,18 +168,23 @@ export function createEnemy(k: KAPLAYCtxT, [enemyStartingPositionX, enemyStartin
   
   const healthBarFill = createHelthBar(k, enemy, k.vec2(0, -35));
 
-  enemy.sword = enemy.add([
-    k.sprite('sword'),
-    k.pos(k.vec2(0, 0)),
-    k.anchor(k.vec2(-1, -1)),
-    k.rotate(-45),
-    k.area(),
+  const hittingCircle = enemy.add([
+    k.pos(0, 0),
+    k.anchor("center"),
+    k.circle(0),
+    k.z(-Infinity),
+    k.area({
+      shape: new k.Circle(k.vec2(0, 0), 0),
+    }),
+    k.outline(3, k.BLACK),
+    'damageCollider',
   ]);
 
-  enemy.sword.onCollide('player', (player: GameObj<HealthComp>) => {
-    if (enemy.isAttackActive) {
+  hittingCircle.onCollide('player', (player: GameObj<HealthComp>) => {
+    enemy.collisionCount += 1;
+    if(enemy.collisionCount === 1) {
       player.hp -= enemy.attackDamage;
-    } else return;
+    };
   });
 
   enemy.onHurt((damage: number) => {
@@ -174,6 +192,7 @@ export function createEnemy(k: KAPLAYCtxT, [enemyStartingPositionX, enemyStartin
   })
 
   enemy.onDeath(() => {
+    createParticles(k, enemy.pos, 20, k.RED);
     enemy.destroy();
   });
 

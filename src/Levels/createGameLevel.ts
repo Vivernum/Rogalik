@@ -1,4 +1,5 @@
 import { KAPLAYCtxT } from "kaplay";
+import { createParticles } from "../utils/collisionParticles";
 
 export function createGameLevel(k: KAPLAYCtxT, map: string[]) {
 
@@ -14,12 +15,14 @@ export function createGameLevel(k: KAPLAYCtxT, map: string[]) {
       "w": () => [
         k.sprite("wallW"),
         k.area(),
+        k.anchor(k.vec2(0, 0)),
         k.body({ isStatic: true }),
         "wall"
       ],
       "h": () => [
         k.sprite("wallH"),
         k.area(),
+        k.anchor(k.vec2(0, 0)),
         k.body({ isStatic: true}),
         "wall",
       ],
@@ -50,6 +53,7 @@ function createObstacles(k: KAPLAYCtxT, map: string[]) {
           k.sprite('wallH'),
           k.opacity(1),
           k.health(50),
+          k.anchor(k.vec2(0, 0)),
           k.pos(levelX, levelY),
           k.area(),
           k.body({ isStatic: true }),
@@ -61,6 +65,7 @@ function createObstacles(k: KAPLAYCtxT, map: string[]) {
         });
 
         obstacle.onDeath(() => {
+          createParticles(k, obstacle.pos, 20, k.BLACK);
           obstacle.destroy();
         });
       };

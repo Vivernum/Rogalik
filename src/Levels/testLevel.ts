@@ -12,7 +12,7 @@ export const map = [
   "h   ooo                      h",
   "h     o                      h",
   "h     o                      h",
-  "h   ooo                      h",
+  "hoooooo                      h",
   "h                            h",
   "h                            h",
   "hwwwwwwwwwwwwwwwwwwwwwwwwwwwwh",

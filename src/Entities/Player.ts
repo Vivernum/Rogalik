@@ -1,5 +1,6 @@
 import { KAPLAYCtxT } from "kaplay";
 import { createHelthBar } from "../utils/healthBar";
+import { createParticles } from "../utils/collisionParticles";
 
 export function createPlayer(k: KAPLAYCtxT) {
 
@@ -29,6 +30,18 @@ export function createPlayer(k: KAPLAYCtxT) {
     }),
     k.body(),
     'player',
+    {
+      hitCooldown: 0,
+      lastHitTime: 0,
+
+      update() {
+        k.setCamPos(player.pos);
+        k.setCamScale(1.8);
+        k.setCamRot(0);
+
+        // this.hitCooldown += k.dt();
+      }
+    }
   ]);
 
   for (const key in dirs) {
@@ -40,10 +53,10 @@ export function createPlayer(k: KAPLAYCtxT) {
   // let dangerousFloorCollisionCount: number = 0;
   // let damageTimer: number = 0;
 
-  player.onUpdate(() => {
-    k.setCamPos(player.pos);
-    k.setCamScale(1.8);
-    k.setCamRot(0);
+  // player.onUpdate(() => {
+  //   k.setCamPos(player.pos);
+  //   k.setCamScale(1.8);
+  //   k.setCamRot(0);
 
     // damage on some types of floors
     // though im going to relocate this part of functionality
@@ -57,7 +70,7 @@ export function createPlayer(k: KAPLAYCtxT) {
     // } else {
     //   damageTimer = 0;
     // };
-  });
+  // });
 
   // player.onCollide('dangerousFloor', () => {
   //   if (dangerousFloorCollisionCount === 0) {
@@ -77,6 +90,7 @@ export function createPlayer(k: KAPLAYCtxT) {
   });
 
   player.onDeath(() => {
+    createParticles(k, player.pos, 20, k.RED);
     player.destroy();
   });
 
