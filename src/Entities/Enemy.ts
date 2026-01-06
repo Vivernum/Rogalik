@@ -5,7 +5,6 @@ import { createCircularParticles } from "../utils/createCircularParticles";
 
 export function createEnemy(k: KAPLAYCtxT, [enemyStartingPositionX, enemyStartingPositionY]: number[]) {
   k.loadSprite('enemy', 'sprites/Entities/dio.png');
-  k.loadSprite('sword', 'sprites/Weapons/sword.png');
 
   const enemy = k.add([
     k.sprite('enemy'),

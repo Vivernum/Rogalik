@@ -27,8 +27,6 @@ export function createAk(k: KAPLAYCtxT) {
         gun.anchor = k.vec2(-1, 0);
         this.isEquipped = true;
         this.owner = player;
-
-        this.trigger('equipped', {player});
       },
 
       // might as well use onUpdate, but with cam following

@@ -50,7 +50,7 @@ function createObstacles(k: KAPLAYCtxT, map: string[]) {
         const levelY = y * 50;
 
         const obstacle = k.add([
-          k.sprite('wallH'),
+          k.sprite('floor'),
           k.opacity(1),
           k.health(50),
           k.anchor(k.vec2(0, 0)),
