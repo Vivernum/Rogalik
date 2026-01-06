@@ -87,7 +87,7 @@ export function createProjectile
           texture: cachedParticlesData.texture,
           quads: cachedParticlesData.quad,
         }, {
-          position:projectile.lastPos,
+          position: projectile.lastPos,
           lifetime: 0.5,
           rate: 0,
           direction: dir.scale(-1).angle(),

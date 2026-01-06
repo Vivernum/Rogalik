@@ -3,9 +3,9 @@ import { createHelthBar } from "../utils/healthBar";
 import { createParticles } from "../utils/collisionParticles";
 
 export interface IPlayer {
-  player: GameObj,
-  k: KAPLAYCtxT,
-  pos: number[],
+  // player: GameObj,
+  // k: KAPLAYCtxT,
+  // pos: number[],
   damageHandler: (damage: number) => void,
 }
 
@@ -37,6 +37,7 @@ export class Player implements IPlayer{
       k.health(100, 100),
       k.anchor('center'),
       k.opacity(1),
+      k.stay(),
       k.area({
         shape: new k.Circle(k.vec2(0, 0), 20),
       }),
@@ -83,4 +84,8 @@ export class Player implements IPlayer{
     };
   };
 
+  setPosition(x: number, y: number): void {
+    this.player.pos.x = x;
+    this.player.pos.y = y;
+  }
 }

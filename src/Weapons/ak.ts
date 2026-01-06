@@ -12,8 +12,10 @@ export function createAk(k: KAPLAYCtxT) {
     }),
     k.rotate(0),
     k.pos(330,200),
+    k.stay(),
     k.anchor('center'),
     'weapon',
+    'item',
     {
       isEquipped: false,
       isPickable: false,

@@ -39,7 +39,7 @@ export class Dio {
         attackRange: 50,
         sightRange: 300,
         isInSrartPosition: false,
-        attackCooldown: 1.5,
+        attackCooldown: 1,
         lastAttackTime: 0,
         attackDamage: 20,
         attackDuration: 0.3,
@@ -174,7 +174,9 @@ export class Dio {
     const hittingCircle = this.enemy.add([
       k.pos(0, 0),
       k.anchor("center"),
-      k.circle(0),
+      k.circle(0, {
+        fill: false,
+      }),
       k.z(-Infinity),
       k.area({
         shape: new k.Circle(k.vec2(0, 0), 0),
