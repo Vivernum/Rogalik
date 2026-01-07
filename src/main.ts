@@ -40,8 +40,8 @@ k.debug.inspect = false;
 // createEnemy(k, [1000,400]);
 // createEnemy(k, [700,200]);
 
-const player = new Player(k, [100, 100]);
-new Inventory(k);
+const inventory = new Inventory(k);
+const player = new Player(k, [100, 100], inventory);
 k.scene('secando', () => {
 const level = createGameLevel(k, map);
 

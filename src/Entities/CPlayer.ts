@@ -1,6 +1,7 @@
-import { KAPLAYCtxT, GameObj, PosComp, HealthComp } from "kaplay";
+import { KAPLAYCtxT, GameObj, PosComp, HealthComp, Game } from "kaplay";
 import { createHelthBar } from "../utils/healthBar";
 import { createParticles } from "../utils/collisionParticles";
+import { IInventory } from "../GameInstances/CInvetntory";
 
 export interface IPlayer {
   // player: GameObj,
@@ -15,6 +16,7 @@ export class Player implements IPlayer{
   constructor(
      public k: KAPLAYCtxT,
      public pos: number[],
+     protected inventory: IInventory,
   ) {
     const dirs = {
       'w': k.UP,
@@ -46,6 +48,7 @@ export class Player implements IPlayer{
       {
         hitCooldown: 1,
         lastHitTime: 0,
+        isItemPickable: false,
 
         update() {
           k.setCamPos(this.pos);
@@ -64,6 +67,24 @@ export class Player implements IPlayer{
     };
 
     const healthBarFill = createHelthBar(k, this.player, k.vec2(0, -35));
+
+    this.player.onCollide('item', (item: GameObj) => {
+      this.player.isItemPickable = true;
+      this.player.onKeyPress('f', () => {
+        if (this.player.isItemPickable) {
+          this.inventory.equip(item);
+        };
+        })
+
+      this.player.onKeyPress('q', () => {
+        if (!item.isEquipped) return;
+        this.inventory.unEquip(item);
+      })
+    });
+
+    this.player.onCollideEnd('item', () => {
+      this.player.isItemPickable = false;
+    });
 
     this.player.onHurt((damage: number) => {
       healthBarFill.width = (this.player.hp / this.player.maxHP) * 60;

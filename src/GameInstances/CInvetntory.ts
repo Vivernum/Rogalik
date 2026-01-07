@@ -1,11 +1,12 @@
 import { GameObj, KAPLAYCtxT, SpriteComp } from "kaplay";
 
 export interface IInventory {
-
+  equip: (item: GameObj) => void,
+  unEquip: (item: GameObj) => void,
 };
 
 export class Inventory implements IInventory{
-  protected itemsList: GameObj[];
+  protected itemsList: GameObj[] = [];
   protected inventory: GameObj[] = [];
   protected inventoryLimit: number = 4;
 
@@ -27,5 +28,13 @@ export class Inventory implements IInventory{
         'inventory'
       ]));
     };
+  };
+
+  equip(item: GameObj): void {
+    console.log('equip', item.tags);
+  };
+
+  unEquip(item: GameObj): void {
+    console.log('unequip', item.tags);
   };
 }
