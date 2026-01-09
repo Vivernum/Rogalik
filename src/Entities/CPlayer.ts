@@ -2,21 +2,25 @@ import { KAPLAYCtxT, GameObj, PosComp, HealthComp, AreaComp } from "kaplay";
 import { createHelthBar } from "../utils/healthBar";
 import { createParticles } from "../utils/collisionParticles";
 import { IInventory } from "../GameInstances/CInvetntory";
+import { TAk } from "../Weapons/CAk";
 
 export interface IPlayer {
+  player: TPlayer,
   damageHandler: (damage: number) => void,
+  equipWeapon: (weapon: TAk) => void,
+  unEquipWeapon: () => void,
 };
 
 export interface PlayerComp {
   hitCooldown: number,
   lastHitTime: number,
-  isItemPickable: boolean,
+  pickedWeapon: null | TAk,
 };
 
 export type TPlayer = GameObj<PosComp | HealthComp | PlayerComp | AreaComp>;
 
 export class Player implements IPlayer{
-  protected player: TPlayer;
+  player: TPlayer;
 
   constructor(
     protected k: KAPLAYCtxT,
@@ -53,7 +57,7 @@ export class Player implements IPlayer{
       {
         hitCooldown: 1,
         lastHitTime: 0,
-        isItemPickable: false,
+        pickedWeapon: null,
 
         update() {
           k.setCamPos(this.pos);
@@ -73,25 +77,7 @@ export class Player implements IPlayer{
 
     const healthBarFill = createHelthBar(k, this.player, k.vec2(0, -35));
 
-    // this.player.onCollide('item', (item: GameObj) => {
-    //   this.player.isItemPickable = true;
-    //   this.player.onKeyPress('f', () => {
-    //     if (this.player.isItemPickable) {
-    //       this.inventory.equip(item);
-    //     };
-    //     })
-
-    //   this.player.onKeyPress('q', () => {
-    //     if (!item.isEquipped) return;
-    //     this.inventory.unEquip(item);
-    //   })
-    // });
-
-    // this.player.onCollideEnd('item', () => {
-    //   this.player.isItemPickable = false;
-    // });
-
-    this.player.onHurt((damage: number) => {
+    this.player.onHurt(() => {
       healthBarFill.width = (this.player.hp / this.player.maxHP) * 60;
     });
 
@@ -108,6 +94,25 @@ export class Player implements IPlayer{
     } else {
       return;
     };
+  };
+
+  equipWeapon(weapon: TAk): void {
+    if (!this.player.pickedWeapon) {
+      this.player.pickedWeapon = weapon;
+      this.player.pickedWeapon.use(this.k.follow(this.player));
+      this.player.pickedWeapon.anchor = this.k.vec2(-1, 0);
+      this.player.pickedWeapon.isEquipped = true;
+    }
+  };
+
+  unEquipWeapon(): void {
+    if (this.player.pickedWeapon) {
+      this.player.pickedWeapon.unuse('follow');
+      this.player.pickedWeapon.anchor = 'center';
+      Math.abs(this.player.pickedWeapon.angle) > 90 ? this.player.pickedWeapon.angle = 180 : this.player.pickedWeapon.angle = 0;
+      this.player.pickedWeapon.isEquipped = false;
+      this.player.pickedWeapon = null;
+    }
   };
 
   setPosition(x: number, y: number): void {

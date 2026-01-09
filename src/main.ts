@@ -1,6 +1,5 @@
 import kaplay, { AreaComp, BodyComp, GameObj, Polygon, Rect } from "kaplay";
 import { createPlayer } from "./Entities/Player";
-import { createAk } from "./Weapons/ak";
 
 import { map } from './Levels/testLevel';
 import { createEnemy } from "./Entities/Enemy";
@@ -8,12 +7,13 @@ import { createGameLevel } from "./Levels/createGameLevel";
 import { Player, IPlayer} from "./Entities/CPlayer";
 import { Dio } from "./Entities/CDio";
 import { Inventory } from "./GameInstances/CInvetntory";
+import { Ak } from "./Weapons/CAk";
 
 const k = kaplay({
   background: 'white',
 });
 
-k.debug.inspect = false;
+k.debug.inspect = true;
 
 // k.onKeyPress('p', () => {
 //   k.debug.inspect = !k.debug.inspect;
@@ -95,10 +95,11 @@ k.scene('begining', () => {
 
   obstacle.onDeath(() => {
     k.go('secando');
-  })
-  
-  const ak = createAk(k);
-  const enemy = new Dio(k, [400, 600], player);
+  });
+
+  const ak = new Ak(k, [300, 200], player);
+  const ak1 = new Ak(k, [300, 300], player);
+  const enemy = new Dio(k, [400, 650], player);
 
   k.onSceneLeave(() => {
     player.setPosition(500,500);
