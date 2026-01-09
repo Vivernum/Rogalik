@@ -82,11 +82,13 @@ export class Player implements IPlayer{
     });
 
     this.player.onDeath(() => {
+      if (this.player.pickedWeapon) this.unEquipWeapon();
       createParticles(k, this.player.pos, 20, k.RED);
       this.player.destroy();
     });
   };
 
+  // Method to handle player damage
   damageHandler(damage: number): void {
     if (this.player.lastHitTime > this.player.hitCooldown) {
       this.player.hp -= damage;
@@ -96,6 +98,7 @@ export class Player implements IPlayer{
     };
   };
 
+// Methods to equip and unequip weapons
   equipWeapon(weapon: TAk): void {
     if (!this.player.pickedWeapon) {
       this.player.pickedWeapon = weapon;
@@ -115,6 +118,7 @@ export class Player implements IPlayer{
     }
   };
 
+  // Method to set player position
   setPosition(x: number, y: number): void {
     this.player.pos.x = x;
     this.player.pos.y = y;

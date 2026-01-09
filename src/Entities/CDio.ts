@@ -53,7 +53,7 @@ export class Dio {
       {
         speed: 150,
         prey: null,
-        attackRange: 50,
+        attackRange: 65,
         sightRange: 300,
         isInSrartPosition: false,
         attackCooldown: 1,
@@ -151,17 +151,18 @@ export class Dio {
           this.moveTo(startingPos[0], startingPos[1], this.speed);
         },
         attackBehahivor(player: GameObj<PosComp | HealthComp>) {
+          this.moveTo(player.pos, this.speed);
           if (this.lastAttackTime >= this.attackCooldown) {
             k.tween(
               0,
-              (this.attackRange + 20) / 2,
+              (this.attackRange + 30) / 2,
               this.attackDuration,
               (radius: number) => {
                 hittingCircle.radius = radius;
                 hittingCircle.use(k.area({
                   shape: new k.Circle(k.vec2(0, 0), radius),
                 }));
-                if (radius === (this.attackRange + 20) / 2) {
+                if (radius === (this.attackRange + 30) / 2) {
                   createCircularParticles(k, this.pos, radius, 50, k.RED)
                 };
               },
