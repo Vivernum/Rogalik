@@ -4,8 +4,25 @@ import { createParticles } from "../utils/collisionParticles";
 import { createCircularParticles } from "../utils/createCircularParticles";
 import { IPlayer } from "./CPlayer";
 
+export type EnemyActionsPull = 'patrol' | 'return' | 'attack' | 'pursuit';
+
+export interface EnemyComp {
+  speed: number;
+  prey: GameObj<PosComp | HealthComp> | null;
+  attackRange: number;
+  sightRange: number;
+  isInSrartPosition: boolean;
+  attackCooldown: number;
+  lastAttackTime: number;
+  attackDamage: number;
+  attackDuration: number;
+  action: EnemyActionsPull;
+};
+
+export type TEnemy = GameObj<PosComp | HealthComp | EnemyComp>
+
 export class Dio {
-  protected enemy: GameObj;
+  protected enemy: TEnemy;
 
   constructor(
     protected k: KAPLAYCtxT,
@@ -43,7 +60,7 @@ export class Dio {
         lastAttackTime: 0,
         attackDamage: 20,
         attackDuration: 0.3,
-        action: 'patrol',
+        action: 'patrol' as EnemyActionsPull,
         swordDirection: k.vec2(0, 0),
 
         add() {

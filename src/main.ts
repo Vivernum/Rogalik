@@ -1,4 +1,4 @@
-import kaplay, { GameObj, Polygon, Rect } from "kaplay";
+import kaplay, { AreaComp, BodyComp, GameObj, Polygon, Rect } from "kaplay";
 import { createPlayer } from "./Entities/Player";
 import { createAk } from "./Weapons/ak";
 

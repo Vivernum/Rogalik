@@ -1,22 +1,27 @@
-import { KAPLAYCtxT, GameObj, PosComp, HealthComp, Game } from "kaplay";
+import { KAPLAYCtxT, GameObj, PosComp, HealthComp, AreaComp } from "kaplay";
 import { createHelthBar } from "../utils/healthBar";
 import { createParticles } from "../utils/collisionParticles";
 import { IInventory } from "../GameInstances/CInvetntory";
 
 export interface IPlayer {
-  // player: GameObj,
-  // k: KAPLAYCtxT,
-  // pos: number[],
   damageHandler: (damage: number) => void,
-}
+};
+
+export interface PlayerComp {
+  hitCooldown: number,
+  lastHitTime: number,
+  isItemPickable: boolean,
+};
+
+export type TPlayer = GameObj<PosComp | HealthComp | PlayerComp | AreaComp>;
 
 export class Player implements IPlayer{
-   player: GameObj;
+  protected player: TPlayer;
 
   constructor(
-     public k: KAPLAYCtxT,
-     public pos: number[],
-     protected inventory: IInventory,
+    protected k: KAPLAYCtxT,
+    protected pos: number[],
+    protected inventory: IInventory,
   ) {
     const dirs = {
       'w': k.UP,
@@ -68,23 +73,23 @@ export class Player implements IPlayer{
 
     const healthBarFill = createHelthBar(k, this.player, k.vec2(0, -35));
 
-    this.player.onCollide('item', (item: GameObj) => {
-      this.player.isItemPickable = true;
-      this.player.onKeyPress('f', () => {
-        if (this.player.isItemPickable) {
-          this.inventory.equip(item);
-        };
-        })
+    // this.player.onCollide('item', (item: GameObj) => {
+    //   this.player.isItemPickable = true;
+    //   this.player.onKeyPress('f', () => {
+    //     if (this.player.isItemPickable) {
+    //       this.inventory.equip(item);
+    //     };
+    //     })
 
-      this.player.onKeyPress('q', () => {
-        if (!item.isEquipped) return;
-        this.inventory.unEquip(item);
-      })
-    });
+    //   this.player.onKeyPress('q', () => {
+    //     if (!item.isEquipped) return;
+    //     this.inventory.unEquip(item);
+    //   })
+    // });
 
-    this.player.onCollideEnd('item', () => {
-      this.player.isItemPickable = false;
-    });
+    // this.player.onCollideEnd('item', () => {
+    //   this.player.isItemPickable = false;
+    // });
 
     this.player.onHurt((damage: number) => {
       healthBarFill.width = (this.player.hp / this.player.maxHP) * 60;
@@ -108,5 +113,5 @@ export class Player implements IPlayer{
   setPosition(x: number, y: number): void {
     this.player.pos.x = x;
     this.player.pos.y = y;
-  }
-}
+  };
+};

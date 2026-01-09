@@ -9,7 +9,7 @@ export function createParticles (
     for (let i = 0; i < count; i++) {
       k.add([
         k.pos(pos),
-        k.rect(5, 5),
+        k.rect(7, 7),
         k.color(color),
         k.opacity(k.rand(0.5, 1)),
         k.lifespan(k.rand(0.1, 0.3)),
