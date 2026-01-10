@@ -1,5 +1,5 @@
 import { KAPLAYCtxT, GameObj, Vec2, Texture, Quad, SpriteData, Asset } from "kaplay";
-import { TAk } from "../CAk";
+import { TWeapon } from "../CWeapon";
 
 type TParticlesData = {
   texture: Texture;
@@ -12,7 +12,7 @@ let cachedProjectile: Asset<SpriteData> | null = null;
 export function createProjectile
 (
   k: KAPLAYCtxT,
-  gun: TAk,
+  gun: TWeapon,
   dir: Vec2,
   rotation: number,
   damage: number

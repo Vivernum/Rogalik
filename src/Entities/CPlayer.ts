@@ -2,7 +2,7 @@ import { KAPLAYCtxT, GameObj, PosComp, HealthComp, AreaComp } from "kaplay";
 import { createHelthBar } from "../utils/healthBar";
 import { createParticles } from "../utils/collisionParticles";
 import { IInventory } from "../GameInstances/CInvetntory";
-import { TAk } from "../Weapons/CAk";
+import { TWeapon } from "../Weapons/CWeapon";
 
 export interface IPlayerEnemyActions {
   damageHandler: (damage: number) => void,
@@ -10,14 +10,14 @@ export interface IPlayerEnemyActions {
 
 export interface IPlayerWeaponActions {
   player: TPlayer,
-  equipWeapon: (weapon: TAk) => void,
+  equipWeapon: (weapon: TWeapon) => void,
   unEquipWeapon: () => void,
 };
 
 export interface PlayerComp {
   hitCooldown: number,
   lastHitTime: number,
-  pickedWeapon: null | TAk,
+  pickedWeapon: null | TWeapon,
 };
 
 export type TPlayer = GameObj<PosComp | HealthComp | PlayerComp | AreaComp>;
@@ -115,7 +115,7 @@ export class Player implements IPlayerEnemyActions, IPlayerWeaponActions {
   };
 
 // Methods to equip and unequip weapons
-  equipWeapon(weapon: TAk): void {
+  equipWeapon(weapon: TWeapon): void {
     if (!this.player.pickedWeapon) {
       this.player.pickedWeapon = weapon;
       this.player.pickedWeapon.use(this.k.follow(this.player));

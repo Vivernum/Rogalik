@@ -6,13 +6,15 @@ import { Player} from "./Entities/CPlayer";
 import { Shriker } from "./Entities/CShriker";
 import { Inventory } from "./GameInstances/CInvetntory";
 import { Ak } from "./Weapons/CAk";
+import { Weapon } from "./Weapons/CWeapon";
 
 const k = kaplay({
   background: 'black',
 });
 
 k.debug.inspect = false;
-
+k.loadSprite("ak", "sprites/Weapons/ak.png");
+k.loadSprite("bazooka", "sprites/Weapons/bazooka.png");
 // k.loadRoot("./"); // A good idea for Itch.io publishing later
 
 // const level = createGameLevel(k, map);
@@ -43,8 +45,8 @@ k.scene('begining', () => {
 
   const level = createGameLevel(k, map2);
 
-  const ak = new Ak(k, [300, 200], player);
-  const ak1 = new Ak(k, [300, 300], player);
+  const ak = new Ak(k, [300, 200], player, 50, 1, 'bazooka');
+  const ak1 = new Ak(k, [300, 300], player, 10, 0.1);
   for (let i = 0; i < 4; i++) {
     new Shriker(k, [i * 200, 550], player);
   };
