@@ -19,17 +19,34 @@ export interface EnemyComp {
   action: EnemyActionsPull;
 };
 
-export type TEnemy = GameObj<PosComp | HealthComp | EnemyComp>;
+export type TShriker = GameObj<PosComp | HealthComp | EnemyComp>;
 
-export class Dio {
-  protected enemy: TEnemy;
+export class Shriker {
+  protected enemy: TShriker;
 
   constructor(
     protected k: KAPLAYCtxT,
     protected startingPos: number[],
     protected player: IPlayer,
   ) {
-    k.loadSprite('enemy', 'sprites/Entities/dio.png');
+    k.loadSprite('enemy', 'sprites/Entities/shriker.png', {
+      sliceX: 12,
+      sliceY: 1,
+      anims: {
+        idle: {
+          from: 0,
+          to: 2,
+          loop: true,
+          pingpong: true,
+        },
+        attack: {
+          from: 3,
+          to: 11,
+          loop: false,
+          speed: 14,
+        },
+      },
+    });
 
     this.enemy = k.add([
       k.sprite('enemy'),
@@ -46,20 +63,20 @@ export class Dio {
         checkFrequency: 0.5,
       }),
       k.area({
-        shape: new k.Circle(k.vec2(0, 0), 20),
+        shape: new k.Circle(k.vec2(0, 0), 16),
       }),
       k.body(),
       'enemy',
       {
-        speed: 200,
+        speed: 150,
         prey: null,
         attackRange: 65,
         sightRange: 300,
         isInSrartPosition: false,
-        attackCooldown: 1,
+        attackCooldown: 1.2,
         lastAttackTime: 0,
         attackDamage: 20,
-        attackDuration: 0.3,
+        attackDuration: 0.5,
         action: 'patrol' as EnemyActionsPull,
         swordDirection: k.vec2(0, 0),
 
@@ -71,6 +88,7 @@ export class Dio {
               this.action = 'pursuit';
             }
           });
+          this.play('idle');
         },
 
 
@@ -153,6 +171,7 @@ export class Dio {
         attackBehahivor(player: GameObj<PosComp | HealthComp>) {
           this.moveTo(player.pos, this.speed);
           if (this.lastAttackTime >= this.attackCooldown) {
+            this.play('attack');
             k.tween(
               0,
               (this.attackRange + 30) / 2,
@@ -163,7 +182,7 @@ export class Dio {
                   shape: new k.Circle(k.vec2(0, 0), radius),
                 }));
                 if (radius === (this.attackRange + 30) / 2) {
-                  createCircularParticles(k, this.pos, radius, 50, k.RED)
+                  createCircularParticles(k, this.pos, radius, 70, k.RED)
                 };
               },
               k.easings.linear,
@@ -195,11 +214,11 @@ export class Dio {
       k.circle(0, {
         fill: false,
       }),
-      k.z(-Infinity),
+      k.z(-99),
       k.area({
         shape: new k.Circle(k.vec2(0, 0), 0),
       }),
-      k.outline(3, k.BLACK),
+      k.outline(2, k.BLACK),
       'damageCollider',
     ]);
 

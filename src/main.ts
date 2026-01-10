@@ -3,7 +3,7 @@ import kaplay, { KAPLAYCtxT } from "kaplay";
 import { map } from './Levels/testLevel';
 import { createGameLevel } from "./Levels/createGameLevel";
 import { Player} from "./Entities/CPlayer";
-import { Dio } from "./Entities/CDio";
+import { Shriker } from "./Entities/CShriker";
 import { Inventory } from "./GameInstances/CInvetntory";
 import { Ak } from "./Weapons/CAk";
 
@@ -30,7 +30,7 @@ const player = new Player(k, [100, 100], inventory);
 k.scene('secando', () => {
 const level = createGameLevel(k, map);
 
-new Dio(k, [400, 450], player);
+new Shriker(k, [400, 450], player);
 });
 
 k.scene('begining', () => {
@@ -84,7 +84,7 @@ k.scene('begining', () => {
 
   const ak = new Ak(k, [300, 200], player);
   const ak1 = new Ak(k, [300, 300], player);
-  new Dio(k, [400, 650], player);
+  new Shriker(k, [400, 650], player);
 
   k.onSceneLeave(() => {
     player.setPosition(500,500);

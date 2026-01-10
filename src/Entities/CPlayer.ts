@@ -38,7 +38,7 @@ export class Player implements IPlayer{
       'down': k.DOWN,
     };
 
-    const SPEED: number = 250;
+    const SPEED: number = 200;
 
     k.loadSprite("jotaro", "sprites/Entities/jotaro.png", {
       sliceX: 4,
