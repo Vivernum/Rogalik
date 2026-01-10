@@ -1,4 +1,5 @@
 import { KAPLAYCtxT, GameObj, Vec2, Texture, Quad, SpriteData, Asset } from "kaplay";
+import { TAk } from "../CAk";
 
 type TParticlesData = {
   texture: Texture;
@@ -11,7 +12,7 @@ let cachedProjectile: Asset<SpriteData> | null = null;
 export function createProjectile
 (
   k: KAPLAYCtxT,
-  gun: GameObj,
+  gun: TAk,
   dir: Vec2,
   rotation: number,
   damage: number
@@ -29,7 +30,7 @@ export function createProjectile
   // caching so there is no need to load the sprite every time
   // and we don't get errors
   if (!cachedParticlesData) {
-    particlesData = k.loadSprite('particle', 'sprites/Textures/projectileParticles.png');
+    particlesData = k.loadSprite('particle', 'sprites/Weapons/projectileParticles.png');
     particlesData.onLoad(() => {
       const hexagonSprite = k.getSprite('particle');
       
@@ -47,7 +48,7 @@ export function createProjectile
     k.move(dir, 400),
     k.offscreen({ destroy: true}),
     k.rotate(rotation),
-    k.anchor(k.vec2(-5, Math.abs(gun.angle) > 90 ? -1 : 1)),
+    k.anchor(k.vec2(-10, 0)),
     {
       damage: damage,
       lastPos: null,

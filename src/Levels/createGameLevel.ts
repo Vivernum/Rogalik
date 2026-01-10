@@ -1,16 +1,20 @@
 import { KAPLAYCtxT } from "kaplay";
 import { createParticles } from "../utils/collisionParticles";
 
+const tileDimension = 32;
+
 export function createGameLevel(k: KAPLAYCtxT, map: string[]) {
 
   k.loadSprite('floor', 'sprites/Textures/floor.png');
   k.loadSprite('lava', 'sprites/Textures/lava.png');
   k.loadSprite('wallW', 'sprites/Textures/wallOnWidth.png');
   k.loadSprite('wallH', 'sprites/Textures/wallOnHeight.png');
+  k.loadSprite('obstacle', 'sprites/Textures/obstacle.png');
+
 
   const level = k.addLevel(map, {
-    tileWidth: 50,
-    tileHeight: 50,
+    tileWidth: tileDimension,
+    tileHeight: tileDimension,
     tiles: {
       "w": () => [
         k.sprite("wallW"),
@@ -36,6 +40,15 @@ export function createGameLevel(k: KAPLAYCtxT, map: string[]) {
   });
 
   createObstacles(k, map);
+  k.add([
+    k.sprite('floor', {
+      width: map[0].length * tileDimension,
+      height: map.length * tileDimension,
+      tiled: true,
+    }),
+    k.pos(-(tileDimension / 2), -(tileDimension / 2)),
+    k.z(-100),
+  ]);
 
   return level;
 };
@@ -46,11 +59,11 @@ function createObstacles(k: KAPLAYCtxT, map: string[]) {
       const tile = map[y][x];
 
       if (tile === 'o') {
-        const levelX = x * 50;
-        const levelY = y * 50;
+        const levelX = x * tileDimension;
+        const levelY = y * tileDimension;
 
         const obstacle = k.add([
-          k.sprite('floor'),
+          k.sprite('obstacle'),
           k.opacity(1),
           k.health(50),
           k.anchor(k.vec2(0, 0)),

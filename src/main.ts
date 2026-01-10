@@ -1,4 +1,4 @@
-import kaplay from "kaplay";
+import kaplay, { KAPLAYCtxT } from "kaplay";
 
 import { map } from './Levels/testLevel';
 import { createGameLevel } from "./Levels/createGameLevel";
@@ -30,7 +30,7 @@ const player = new Player(k, [100, 100], inventory);
 k.scene('secando', () => {
 const level = createGameLevel(k, map);
 
-new Dio(k, [400, 600], player);
+new Dio(k, [400, 450], player);
 });
 
 k.scene('begining', () => {
@@ -84,7 +84,7 @@ k.scene('begining', () => {
 
   const ak = new Ak(k, [300, 200], player);
   const ak1 = new Ak(k, [300, 300], player);
-  const enemy = new Dio(k, [400, 650], player);
+  new Dio(k, [400, 650], player);
 
   k.onSceneLeave(() => {
     player.setPosition(500,500);

@@ -1,4 +1,4 @@
-import { KAPLAYCtxT, GameObj, PosComp, HealthComp } from "kaplay";
+import { KAPLAYCtxT, GameObj, PosComp, HealthComp, AnimateComp } from "kaplay";
 import { createHelthBar } from "../utils/healthBar";
 import { createParticles } from "../utils/collisionParticles";
 import { createCircularParticles } from "../utils/createCircularParticles";
@@ -19,7 +19,7 @@ export interface EnemyComp {
   action: EnemyActionsPull;
 };
 
-export type TEnemy = GameObj<PosComp | HealthComp | EnemyComp>
+export type TEnemy = GameObj<PosComp | HealthComp | EnemyComp>;
 
 export class Dio {
   protected enemy: TEnemy;
@@ -51,7 +51,7 @@ export class Dio {
       k.body(),
       'enemy',
       {
-        speed: 150,
+        speed: 200,
         prey: null,
         attackRange: 65,
         sightRange: 300,
@@ -207,8 +207,8 @@ export class Dio {
       this.player.damageHandler(this.enemy.attackDamage);
     });
 
-    this.enemy.onHurt((damage: number) => {
-      healthBarFill.width = (this.enemy.hp / this.enemy.maxHP) * 60;
+    this.enemy.onHurt(() => {
+      healthBarFill.width = (this.enemy.hp / this.enemy.maxHP) * 40;
     })
 
     this.enemy.onDeath(() => {

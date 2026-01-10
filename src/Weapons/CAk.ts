@@ -7,6 +7,7 @@ export interface IAk {
   isPickable: boolean,
   shotsCount: number,
   baseDamage: number,
+  firingFrequency: number,
 };
 
 export type TAk = GameObj<PosComp | AreaComp | AnchorComp| RotateComp | IAk>;
@@ -24,7 +25,7 @@ export class Ak {
     this.gun =k.add([
       k.sprite("ak"),
       k.area({
-        shape: new k.Rect(k.vec2(0.0), 50, 20),
+        shape: new k.Rect(k.vec2(0.0), 30, 15),
       }),
       k.rotate(0),
       k.pos(pos[0], pos[1]),
@@ -37,30 +38,27 @@ export class Ak {
         isPickable: false,
         shotsCount: 0,
         baseDamage: 20,
+        firingFrequency: 0.3,
 
         add() {
-          let gunAngle: number | null = null;
-          let damageTimer = 0.3;
-
           this.onUpdate(() => {
             if (!this.isEquipped) return;
-            damageTimer += k.dt();
+            this.firingFrequency += k.dt();
           });
 
           this.onMouseMove(() => {
             if (!this.isEquipped) return;
-            gunAngle = k.toWorld(k.mousePos()).sub(playerIn.player.pos).angle();
-            this.angle = gunAngle;
+            this.angle = k.toWorld(k.mousePos()).sub(playerIn.player.pos).angle();
             this.flipY = Math.abs(this.angle) > 90;
           });
 
           this.onMouseDown(() => {
             if (!this.isEquipped) return;
-            if(damageTimer >= 0.3) {
-              damageTimer = 0;
+            if(this.firingFrequency >= 0.3) {
+              this.firingFrequency = 0;
               if (this.shotsCount === 0) {
                 const dir = k.toWorld(k.mousePos()).sub(playerIn.player.pos).unit().scale(2000);
-                createProjectile(k, this, dir, gunAngle, this.baseDamage);
+                createProjectile(k, this, dir, this.angle, this.baseDamage);
                 this.shotsCount++;
               }
             } else {

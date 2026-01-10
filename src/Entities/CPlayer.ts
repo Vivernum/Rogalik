@@ -40,17 +40,30 @@ export class Player implements IPlayer{
 
     const SPEED: number = 250;
 
-    k.loadSprite("jotaro", "sprites/Entities/jotaro-outline.png");
+    k.loadSprite("jotaro", "sprites/Entities/jotaro.png", {
+      sliceX: 4,
+      sliceY: 1,
+      anims: {
+        idle: {
+          from: 0,
+          to: 3,
+          loop: true,
+          pingpong: true,
+        }
+      }
+    });
 
     this.player = k.add([
-      k.sprite("jotaro"),
+      k.sprite("jotaro", {
+        anim: 'idle',
+      }),
       k.pos(this.pos[0], this.pos[1]),
       k.health(100, 100),
       k.anchor('center'),
       k.opacity(1),
       k.stay(),
       k.area({
-        shape: new k.Circle(k.vec2(0, 0), 20),
+        shape: new k.Circle(k.vec2(0, 0), 16),
       }),
       k.body(),
       'player',
@@ -61,7 +74,7 @@ export class Player implements IPlayer{
 
         update() {
           k.setCamPos(this.pos);
-          k.setCamScale(1.8);
+          k.setCamScale(2.3);
           k.setCamRot(0);
 
           this.lastHitTime += k.dt();
@@ -75,10 +88,10 @@ export class Player implements IPlayer{
       });
     };
 
-    const healthBarFill = createHelthBar(k, this.player, k.vec2(0, -35));
+    const healthBarFill = createHelthBar(k, this.player, k.vec2(0, -25));
 
     this.player.onHurt(() => {
-      healthBarFill.width = (this.player.hp / this.player.maxHP) * 60;
+      healthBarFill.width = (this.player.hp / this.player.maxHP) * 40;
     });
 
     this.player.onDeath(() => {
