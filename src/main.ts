@@ -1,6 +1,6 @@
 import kaplay, { KAPLAYCtxT } from "kaplay";
 
-import { map } from './Levels/testLevel';
+import { map, map2 } from './Levels/testLevel';
 import { createGameLevel } from "./Levels/createGameLevel";
 import { Player} from "./Entities/CPlayer";
 import { Shriker } from "./Entities/CShriker";
@@ -8,7 +8,7 @@ import { Inventory } from "./GameInstances/CInvetntory";
 import { Ak } from "./Weapons/CAk";
 
 const k = kaplay({
-  background: 'white',
+  background: 'black',
 });
 
 k.debug.inspect = false;
@@ -34,57 +34,20 @@ new Shriker(k, [400, 450], player);
 });
 
 k.scene('begining', () => {
-  k.loadSprite('floor', 'sprites/Textures/floor.png');
-
-  k.add([
-    k.pos(0, 0),
-    k.rect(1000, 20),
-    k.area(),
-    k.body({isStatic: true}),
-    k.color(k.rgb(128, 64, 48)),
-    'wall',
-  ]);
-  k.add([
-    k.pos(0, 780),
-    k.rect(1000, 20),
-    k.area(),
-    k.body({isStatic: true}),
-    k.color(k.rgb(128, 64, 48)),
-    'wall',
-  ]);k.add([
-    k.pos(0, 0),
-    k.rect(20, 800),
-    k.area(),
-    k.body({isStatic: true}),
-    k.color(k.rgb(128, 64, 48)),
-    'wall',
-  ]);k.add([
-    k.pos(980, 0),
-    k.rect(20, 800),
-    k.area(),
-    k.body({isStatic: true}),
-    k.color(k.rgb(128, 64, 48)),
-    'wall',
-  ]);
-
-  const obstacle = k.add([
-    k.sprite('floor'),
-          k.opacity(1),
-          k.health(50),
-          k.anchor(k.vec2(0, 0)),
-          k.pos(200, 200),
-          k.area(),
-          k.body({ isStatic: true }),
-          'obstacle',
-  ]);
-
-  obstacle.onDeath(() => {
-    k.go('secando');
+  k.loadSprite('obstacle', 'sprites/Textures/obstacle.png');
+  let score: number | null = null;
+  k.onUpdate(() => {
+    score = k.get('enemy').length;
+    if (score === 0) k.go('secando');
   });
+
+  const level = createGameLevel(k, map2);
 
   const ak = new Ak(k, [300, 200], player);
   const ak1 = new Ak(k, [300, 300], player);
-  new Shriker(k, [400, 650], player);
+  for (let i = 0; i < 4; i++) {
+    new Shriker(k, [i * 200, 550], player);
+  };
 
   k.onSceneLeave(() => {
     player.setPosition(500,500);

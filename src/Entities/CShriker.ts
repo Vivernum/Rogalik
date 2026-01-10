@@ -2,7 +2,7 @@ import { KAPLAYCtxT, GameObj, PosComp, HealthComp, AnimateComp } from "kaplay";
 import { createHelthBar } from "../utils/healthBar";
 import { createParticles } from "../utils/collisionParticles";
 import { createCircularParticles } from "../utils/createCircularParticles";
-import { IPlayer } from "./CPlayer";
+import { IPlayerEnemyActions } from "./CPlayer";
 
 export type EnemyActionsPull = 'patrol' | 'return' | 'attack' | 'pursuit';
 
@@ -27,7 +27,7 @@ export class Shriker {
   constructor(
     protected k: KAPLAYCtxT,
     protected startingPos: number[],
-    protected player: IPlayer,
+    protected player: IPlayerEnemyActions,
   ) {
     k.loadSprite('enemy', 'sprites/Entities/shriker.png', {
       sliceX: 12,
@@ -67,6 +67,7 @@ export class Shriker {
       }),
       k.body(),
       'enemy',
+      'shriker',
       {
         speed: 150,
         prey: null,
@@ -155,8 +156,7 @@ export class Shriker {
             };
           };
         },
-        
-        
+
         patrolBehavior() {
           
         },

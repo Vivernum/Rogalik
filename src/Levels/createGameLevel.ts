@@ -33,6 +33,7 @@ export function createGameLevel(k: KAPLAYCtxT, map: string[]) {
       "l": () => [
         k.sprite("lava"),
         k.area(),
+        k.z(-99),
         "lava",
         'dangerousFloor',
       ],

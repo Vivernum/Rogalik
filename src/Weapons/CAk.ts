@@ -1,5 +1,5 @@
 import { KAPLAYCtxT, GameObj, AnchorComp, AreaComp, PosComp, RotateComp } from "kaplay";
-import { IPlayer } from "../Entities/CPlayer";
+import { IPlayerWeaponActions } from "../Entities/CPlayer";
 import { createProjectile } from "./Bullets/projectile";
 
 export interface IAk {
@@ -18,7 +18,7 @@ export class Ak {
   constructor (
     protected k: KAPLAYCtxT,
     protected pos: number[],
-    protected playerIn: IPlayer,
+    protected playerIn: IPlayerWeaponActions,
   ) {
     k.loadSprite("ak", "sprites/Weapons/ak.png");
 

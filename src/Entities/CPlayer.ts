@@ -4,9 +4,12 @@ import { createParticles } from "../utils/collisionParticles";
 import { IInventory } from "../GameInstances/CInvetntory";
 import { TAk } from "../Weapons/CAk";
 
-export interface IPlayer {
-  player: TPlayer,
+export interface IPlayerEnemyActions {
   damageHandler: (damage: number) => void,
+};
+
+export interface IPlayerWeaponActions {
+  player: TPlayer,
   equipWeapon: (weapon: TAk) => void,
   unEquipWeapon: () => void,
 };
@@ -19,7 +22,7 @@ export interface PlayerComp {
 
 export type TPlayer = GameObj<PosComp | HealthComp | PlayerComp | AreaComp>;
 
-export class Player implements IPlayer{
+export class Player implements IPlayerEnemyActions, IPlayerWeaponActions {
   player: TPlayer;
 
   constructor(

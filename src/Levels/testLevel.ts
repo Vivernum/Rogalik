@@ -17,3 +17,27 @@ export const map = [
   "h                            h",
   "hwwwwwwwwwwwwwwwwwwwwwwwwwwwwh",
 ];
+
+export const map2 = [
+  "hwwwwwwwwwwwwwwwwwwwwwwwwwwwwh",
+  "h                    o       h",
+  "h                    o       h",
+  "h                    o       h",
+  "h                    ooooo   h",
+  "h        ooooo               h",
+  "h            o               h",
+  "h            o               h",
+  "h        ooooo               h",
+  "h                            h",
+  "h                            h",
+  "h                    oooo    h",
+  "h                            h",
+  "h        lllll               h",
+  "h                            h",
+  "h                            h",
+  "h                            h",
+  "h                            h",
+  "h                            h",
+  "h                            h",
+  "hwwwwwwwwwwwwwwwwwwwwwwwwwwwwh",
+]
