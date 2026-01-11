@@ -1,40 +1,72 @@
-import { GameObj, KAPLAYCtxT, SpriteComp } from "kaplay";
+import { ColorComp, GameObj, KAPLAYCtxT, OutlineComp, PosComp, RectComp, SpriteComp } from "kaplay";
+import { THealthPotion } from "../Items/healthPotion";
 
 export interface IInventory {
+  isInventoryOpen: boolean,
+  renderIventory: () => void,
+  closeInventory: () => void,
   equip: (item: GameObj) => void,
   unEquip: (item: GameObj) => void,
 };
 
 export class Inventory implements IInventory{
-  protected itemsList: GameObj[] = [];
-  protected inventory: GameObj[] = [];
-  protected inventoryLimit: number = 4;
+  public isInventoryOpen: boolean = false;
+  protected itemsList: GameObj[][] | null[][] = [
+    [null, null, null],
+    [null, null, null],
+    [null, null, null],
+  ];
+  protected inventory: GameObj[][] | null[][] = [
+    [null, null, null],
+    [null, null, null],
+    [null, null, null],
+  ];
+  protected inventoryLimit: number = 3;
 
   constructor(
-    k: KAPLAYCtxT,
+    protected k: KAPLAYCtxT,
   ) {
+    // for (let i = 0; i < this.inventoryLimit; i++) {
+    //   this.itemsList.push([null, null, null, null]);
+    // };
+  };
+
+  renderIventory(): void {
     for (let i = 0; i < this.inventoryLimit; i++) {
-      this.inventory.push(k.add([
-        k.rect(70, 70, {
-          radius: 5,
-        }),
-        k.stay(),
-        k.fixed(),
-        k.z(10),
-        k.pos(30 + 80 * i, k.height() - 80),
-        k.color('gray'),
-        k.outline(5, k.BLACK),
-        k.opacity(0.5),
-        'inventory'
-      ]));
+      for (let j = 0; j < this.inventoryLimit; j++) {
+        const item = this.k.add([
+          this.k.rect(100, 100, {
+            radius: 5,
+          }),
+          this.k.fixed(),
+          this.k.stay(),
+          this.k.z(10),
+          this.k.color('gray'),
+          this.k.opacity(0.5),
+          this.k.outline(5, this.k.BLACK),
+          this.k.pos(40 + 110 * j, this.k.height() - 145 - 110 * i),
+        ]);
+        this.inventory[i][j] = item;
+      };
     };
+    this.isInventoryOpen = true;
   };
 
-  equip(item: GameObj): void {
-    console.log('equip', item.tags);
+  closeInventory(): void {
+    for (let i = 0; i < this.inventoryLimit; i++) {
+      for (let j = 0; j < this.inventoryLimit; j++) {
+        this.inventory[i][j].destroy();
+        this.inventory[i][j] = null;
+      };
+    };
+    this.isInventoryOpen = false;
+  }
+
+  equip(item: THealthPotion): void {
+    console.log('picked!');
   };
 
-  unEquip(item: GameObj): void {
-    console.log('unequip', item.tags);
+  unEquip(item: THealthPotion): void {
+
   };
 }

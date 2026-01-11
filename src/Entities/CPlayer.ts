@@ -18,6 +18,7 @@ export interface PlayerComp {
   hitCooldown: number,
   lastHitTime: number,
   pickedWeapon: null | TWeapon,
+  speed: number,
 };
 
 export type TPlayer = GameObj<PosComp | HealthComp | PlayerComp | AreaComp>;
@@ -40,8 +41,6 @@ export class Player implements IPlayerEnemyActions, IPlayerWeaponActions {
       'up': k.UP,
       'down': k.DOWN,
     };
-
-    const SPEED: number = 200;
 
     k.loadSprite("jotaro", "sprites/Entities/jotaro.png", {
       sliceX: 4,
@@ -74,6 +73,7 @@ export class Player implements IPlayerEnemyActions, IPlayerWeaponActions {
         hitCooldown: 1,
         lastHitTime: 0,
         pickedWeapon: null,
+        speed: 200,
 
         update() {
           k.setCamPos(this.pos);
@@ -86,8 +86,8 @@ export class Player implements IPlayerEnemyActions, IPlayerWeaponActions {
     ]);
 
     for (const key in dirs) {
-      this.player.onKeyDown(key, () => {
-        this.player.move(dirs[key].scale(SPEED));
+      this.player.onKeyDown(key, () => {;
+        this.player.move(dirs[key].scale(this.player.speed));
       });
     };
 
@@ -101,6 +101,14 @@ export class Player implements IPlayerEnemyActions, IPlayerWeaponActions {
       if (this.player.pickedWeapon) this.unEquipWeapon();
       createParticles(k, this.player.pos, 20, k.RED);
       this.player.destroy();
+    });
+
+    this.player.onKeyPress('i', () => {
+      if (!this.inventory.isInventoryOpen) {
+        this.inventory.renderIventory();
+      } else {
+        this.inventory.closeInventory();
+      }
     });
   };
 

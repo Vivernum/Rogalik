@@ -6,6 +6,7 @@ import { Player} from "./Entities/CPlayer";
 import { Shriker } from "./Entities/CShriker";
 import { Inventory } from "./GameInstances/CInvetntory";
 import { WeaponProvider } from "./Weapons/WeaponProvider";
+import { HealthPotion } from "./Items/healthPotion";
 
 const k = kaplay({
   background: 'black',
@@ -20,9 +21,9 @@ const weaponProvider = new WeaponProvider(k);
 
 
 k.scene('secando', () => {
-const level = createGameLevel(k, map);
-
-new Shriker(k, [400, 450], player);
+  const level = createGameLevel(k, map);
+  
+  new Shriker(k, [400, 450], player);
 });
 
 k.scene('begining', () => {
@@ -37,8 +38,10 @@ k.scene('begining', () => {
   
   const bazooka = weaponProvider.getBazooka([300, 300], player);
   const kolt = weaponProvider.getKolt([300, 200], player);
+  const ak = weaponProvider.getAk([200, 150], player);
+  const health = new HealthPotion(k, [300, 100], inventory);
 
-  for (let i = 0; i < 4; i++) {
+  for (let i = 1; i <= 1; i++) {
     new Shriker(k, [i * 200, 550], player);
   };
 

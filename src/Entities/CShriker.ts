@@ -59,7 +59,7 @@ export class Shriker {
         lineOfSight: true,
         raycastExclude: ['enemy', 'weapon', 'projectile'],
         direction: -90,
-        fieldOfView: 60,
+        fieldOfView: 359,
         checkFrequency: 0.5,
       }),
       k.area({
@@ -89,7 +89,6 @@ export class Shriker {
               this.action = 'pursuit';
             }
           });
-          this.play('idle');
         },
 
 
@@ -158,7 +157,7 @@ export class Shriker {
         },
 
         patrolBehavior() {
-          
+          this.play('idle');
         },
         
         pursuitBehavior(player: GameObj) {
@@ -206,7 +205,7 @@ export class Shriker {
       },
     ]);
 
-    const healthBarFill = createHelthBar(k, this.enemy, k.vec2(0, -35));
+    const healthBarFill = createHelthBar(k, this.enemy, k.vec2(0, -25));
 
     const hittingCircle = this.enemy.add([
       k.pos(0, 0),

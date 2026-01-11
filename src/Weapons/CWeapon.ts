@@ -9,6 +9,7 @@ export interface IWeapon {
   baseDamage: number,
   firingFrequency: number,
   firingTempCount: number,
+  takeShot: () => void,
 };
 
 export type TWeapon = GameObj<PosComp | AreaComp | AnchorComp | RotateComp | SpriteComp | IWeapon>;
@@ -43,6 +44,15 @@ export abstract class Weapon {
         baseDamage: baseDamage,
         firingFrequency: firingFrequency,
         firingTempCount: firingFrequency,
+
+        takeShot(): void {
+          this.firingTempCount = 0;
+          if (this.shotsCount === 0) {
+            const dir = k.toWorld(k.mousePos()).sub(playerIn.player.pos).unit().scale(2000);
+            createProjectile(k, this, dir, this.angle, this.baseDamage);
+            this.shotsCount++;
+          };
+        },
       },
     ]);
 
@@ -60,12 +70,7 @@ export abstract class Weapon {
     this.weapon.onMouseDown(() => {
       if (!this.weapon.isEquipped) return;
       if(this.weapon.firingTempCount >= this.weapon.firingFrequency) {
-        this.weapon.firingTempCount = 0;
-        if (this.weapon.shotsCount === 0) {
-          const dir = k.toWorld(k.mousePos()).sub(playerIn.player.pos).unit().scale(2000);
-          createProjectile(k, this.weapon, dir, this.weapon.angle, this.weapon.baseDamage);
-          this.weapon.shotsCount++;
-        }
+        this.weapon.takeShot();
       } else {
         this.weapon.shotsCount = 0;
       }
