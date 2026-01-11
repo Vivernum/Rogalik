@@ -2,14 +2,14 @@ import { KAPLAYCtxT } from "kaplay";
 import { IPlayerWeaponActions } from "../Entities/CPlayer";
 import { Weapon } from "./CWeapon";
 
-export class Ak extends Weapon {
+export class Kolt extends Weapon {
   constructor (
     protected k: KAPLAYCtxT,
     protected pos: number[],
     protected playerIn: IPlayerWeaponActions,
-    protected baseDamage: number = 15,
-    protected firingFrequency: number = 0.3,
-    protected weaponSprite: string = 'ak',
+    protected baseDamage: number = 10,
+    protected firingFrequency: number = 0.7,
+    protected weaponSprite: string = 'kolt',
   ) {
     super(
       k,

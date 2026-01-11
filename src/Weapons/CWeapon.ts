@@ -91,5 +91,13 @@ export abstract class Weapon {
       }
     });
 
+    this.weapon.onDestroy(() => {
+      this.playerIn.unEquipWeapon();
+    });
+
   };
+
+  getWeapon(): TWeapon {
+    return this.weapon;
+  }
 };
