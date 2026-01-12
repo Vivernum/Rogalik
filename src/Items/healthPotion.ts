@@ -1,11 +1,12 @@
-import { KAPLAYCtxT, GameObj, PosComp, SpriteComp, AreaComp } from "kaplay";
+import { KAPLAYCtxT, GameObj, PosComp, SpriteComp, AreaComp, OpacityComp, ZComp } from "kaplay";
 import { IInventory } from "../GameInstances/CInvetntory";
 
 export interface IHealthPotionComp {
   isPickable: boolean,
+  isEquipped: boolean,
 };
 
-export type THealthPotion = GameObj<PosComp | SpriteComp | AreaComp | IHealthPotionComp>;
+export type THealthPotion = GameObj<PosComp | SpriteComp | AreaComp | OpacityComp | IHealthPotionComp>;
 
 export class HealthPotion {
   protected healthPotion: THealthPotion;
@@ -34,10 +35,13 @@ export class HealthPotion {
     this.healthPotion = k.add([
       k.sprite('healthPotion', { anim: 'idle' }),
       k.pos(pos[0], pos[1]),
+      k.anchor('center'),
+      k.opacity(1),
       k.area(),
       'item',
       {
         isPickable: false,
+        isEquipped: false,
       }
     ]);
 
@@ -50,10 +54,15 @@ export class HealthPotion {
     });
 
     this.healthPotion.onKeyPress('f', () => {
-      if (this.healthPotion.isPickable) {
+      if (this.healthPotion.isPickable && !this.healthPotion.isEquipped) {
         this.inventory.equip(this.healthPotion);
+        this.healthPotion.destroy();
       };
     });
 
   };
+
+  // getInstance(): THealthPotion {
+  //   return this.healthPotion;
+  // }
 };

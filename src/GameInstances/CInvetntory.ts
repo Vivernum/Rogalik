@@ -1,18 +1,19 @@
-import { ColorComp, GameObj, KAPLAYCtxT, Key, OutlineComp, PosComp, RectComp, SpriteComp } from "kaplay";
-import { THealthPotion } from "../Items/healthPotion";
+import { ColorComp, GameObj, KAPLAYCtxT, Key, OutlineComp, PosComp, RectComp, SpriteComp, Vec2 } from "kaplay";
+import { HealthPotion, THealthPotion } from "../Items/healthPotion";
+import { fail } from "node:assert";
 
 export interface IInventory {
   isInventoryOpen: boolean,
   renderIventory: () => void,
   closeInventory: () => void,
-  equip: (item: GameObj) => void,
-  unEquip: (item: GameObj) => void,
+  equip: (item: THealthPotion) => void,
+  unEquip: (pos: Vec2) => void,
 };
 
 export class Inventory implements IInventory {
   public isInventoryOpen: boolean = false;
   protected currentItem: number[] = [0, 0];
-  protected itemsList: GameObj[][] | null[][] = [
+  protected itemsList: THealthPotion[][] | null[][] = [
     [null, null, null],
     [null, null, null],
     [null, null, null],
@@ -43,6 +44,11 @@ export class Inventory implements IInventory {
     });
   };
 
+  protected rerenderInventory(): void {
+    this.closeInventory();
+    this.renderIventory();
+  };
+
   renderIventory(): void {
     for (let i = 0; i < this.inventoryLimit; i++) {
       for (let j = 0; j < this.inventoryLimit; j++) {
@@ -55,9 +61,20 @@ export class Inventory implements IInventory {
           this.k.z(10),
           this.k.color(this.currentItem[0] === i && this.currentItem[1] === j ? 'yellow' : 'gray'),
           this.k.opacity(0.5),
+          this.k.anchor('center'),
           this.k.outline(5, this.k.BLACK),
-          this.k.pos(40 + 110 * j, this.k.height() - 360 + 110 * i),
+          this.k.pos(90 + 110 * j, this.k.height() - 310 + 110 * i),
         ]);
+        if (this.itemsList[i][j]) {
+          item.add([
+            this.k.sprite(this.itemsList[i][j].sprite),
+            this.k.pos(0, 0),
+            this.k.stay(),
+            this.k.scale(4),
+            this.k.anchor('center'),
+            this.k.z(11),
+          ]);
+        }
         this.inventory[i][j] = item;
       };
     };
@@ -70,49 +87,41 @@ export class Inventory implements IInventory {
       case 'left':{
         if (this.currentItem[1] === 0) {
           this.currentItem[1] = this.inventoryLimit - 1;
-          this.closeInventory();
-          this.renderIventory();
+          this.rerenderInventory();
           break;
         };
         this.currentItem[1] -= 1;
-        this.closeInventory();
-        this.renderIventory();
+        this.rerenderInventory();
         break;
       }
       case 'right': {
         if (this.currentItem[1] === this.inventoryLimit - 1) {
           this.currentItem[1] = 0;
-          this.closeInventory();
-          this.renderIventory();
+          this.rerenderInventory();
           break;
         };
         this.currentItem[1] += 1;
-        this.closeInventory();
-        this.renderIventory();
+        this.rerenderInventory();
         break;
       }
       case 'up': {
         if (this.currentItem[0] === 0) {
           this.currentItem[0] = this.inventoryLimit - 1;
-          this.closeInventory();
-          this.renderIventory();
+          this.rerenderInventory();
           break;
         };
         this.currentItem[0] -= 1;
-        this.closeInventory();
-        this.renderIventory();
+        this.rerenderInventory();
         break;
       }
       case 'down': {
         if (this.currentItem[0] === this.inventoryLimit - 1) {
           this.currentItem[0] = 0;
-          this.closeInventory();
-          this.renderIventory();
+          this.rerenderInventory();
           break;
         };
         this.currentItem[0] += 1;
-        this.closeInventory();
-        this.renderIventory();
+        this.rerenderInventory();
         break;
       }
     };
@@ -129,10 +138,34 @@ export class Inventory implements IInventory {
   }
 
   equip(item: THealthPotion): void {
-    console.log('picked!');
+    this.placeItem(item);
+    // item.isEquipped = true;
+    // item.opacity = 0;
+    if (this.isInventoryOpen) {
+      this.rerenderInventory();
+    };
   };
 
-  unEquip(item: THealthPotion): void {
-
+  unEquip(pos: Vec2): void {
+    const item = this.itemsList[this.currentItem[0]][this.currentItem[1]]; 
+    if (item) {
+      const some = new HealthPotion(this.k, [pos.x, pos.y], this);
+      // item.pos = pos;
+      // item.opacity = 1;
+      // item.isEquipped = false;
+      this.itemsList[this.currentItem[0]][this.currentItem[1]] = null;
+      this.rerenderInventory();
+    };
   };
-}
+
+  protected placeItem(item: THealthPotion): void {
+    for (let i = 0; i < this.inventoryLimit; i++) {
+      const currentIndex = this.itemsList[i].indexOf(null);
+      if (currentIndex !== -1) {
+        this.itemsList[i][currentIndex] = item;
+        return;
+      };
+    };
+    // здесь будет метод для возврата предмета, если нет места в инвентаре
+  };
+};

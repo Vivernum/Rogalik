@@ -107,6 +107,12 @@ export class Player implements IPlayerEnemyActions, IPlayerWeaponActions {
         this.inventory.closeInventory();
       }
     });
+
+    this.player.onKeyPress('e', () => {
+      if (this.inventory.isInventoryOpen) {
+        this.inventory.unEquip(this.player.pos);
+      };
+    })
   };
 
   // Method to handle player damage
