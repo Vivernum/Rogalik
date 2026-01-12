@@ -36,10 +36,6 @@ export class Player implements IPlayerEnemyActions, IPlayerWeaponActions {
       'd': k.RIGHT,
       's': k.DOWN,
       'a': k.LEFT,
-      'left': k.LEFT,
-      'right': k.RIGHT,
-      'up': k.UP,
-      'down': k.DOWN,
     };
 
     k.loadSprite("jotaro", "sprites/Entities/jotaro.png", {
@@ -103,6 +99,7 @@ export class Player implements IPlayerEnemyActions, IPlayerWeaponActions {
       this.player.destroy();
     });
 
+    // Inventory
     this.player.onKeyPress('i', () => {
       if (!this.inventory.isInventoryOpen) {
         this.inventory.renderIventory();

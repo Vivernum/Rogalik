@@ -49,7 +49,7 @@ export class HealthPotion {
       this.healthPotion.isPickable = false;
     });
 
-    this.healthPotion.onKeyPress('c', () => {
+    this.healthPotion.onKeyPress('f', () => {
       if (this.healthPotion.isPickable) {
         this.inventory.equip(this.healthPotion);
       };
