@@ -170,6 +170,7 @@ export class Inventory implements IInventory {
     if (item) {
       item.callback(player, this.k);
       this.itemsList[this.currentItem[0]][this.currentItem[1]] = null;
+      this.isINventoryFull = false;
       this.rerenderInventory();
     };
   };

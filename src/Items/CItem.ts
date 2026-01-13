@@ -5,6 +5,7 @@ import { GameObj, PosComp, SpriteComp, AreaComp, OpacityComp, KAPLAYCtxT } from 
 export interface IItem {
   isPickable: boolean,
   isEquipped: boolean,
+  player: TPlayer,
   callback: (player: TPlayer, k: KAPLAYCtxT) => void,
 };
 
@@ -32,11 +33,13 @@ export abstract class Item {
       {
         isPickable: false,
         isEquipped: false,
+        player: null,
         callback: this.callback,
       }
     ]);
 
-    this.item.onCollide('player', () => {
+    this.item.onCollide('player', (player: TPlayer) => {
+      this.item.player = player;
       this.item.isPickable = true;
     });
 
@@ -47,6 +50,13 @@ export abstract class Item {
     this.item.onKeyPress('f', () => {
       if (this.item.isPickable && !this.item.isEquipped && !this.inventory.isINventoryFull) {
         this.inventory.equip(this.item);
+        this.item.destroy();
+      };
+    });
+
+    this.item.onKeyPress('e', () => {
+      if (this.item.player && this.item.isPickable) {
+        this.item.callback(this.item.player, this.k);
         this.item.destroy();
       };
     });
