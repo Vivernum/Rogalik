@@ -6,7 +6,7 @@ import { Player} from "./Entities/CPlayer";
 import { Shriker } from "./Entities/CShriker";
 import { Inventory } from "./GameInstances/CInvetntory";
 import { WeaponProvider } from "./Weapons/WeaponProvider";
-import { HealthPotion } from "./Items/healthPotion";
+import { ItemProvider } from "./Items/ItemProvider";
 
 const k = kaplay({
   background: 'black',
@@ -15,7 +15,8 @@ const k = kaplay({
 k.debug.inspect = false;
 // k.loadRoot("./"); // A good idea for Itch.io publishing later
 
-const inventory = new Inventory(k);
+const itemsProvider = new ItemProvider(k);
+const inventory = new Inventory(k, itemsProvider);
 const player = new Player(k, [100, 100], inventory);
 const weaponProvider = new WeaponProvider(k);
 
@@ -39,19 +40,16 @@ k.scene('begining', () => {
   const bazooka = weaponProvider.getBazooka([300, 300], player);
   const kolt = weaponProvider.getKolt([300, 200], player);
   const ak = weaponProvider.getAk([200, 150], player);
-  const health = new HealthPotion(k, [300, 100], inventory);
-
-  // const some = health.getInstance();
-
-  // const health1 = new HealthPotion(k, [122, 100], inventory);
-  // const health2 = new HealthPotion(k, [200, 100], inventory);
-  // const health3 = new HealthPotion(k, [50, 100], inventory);
-  // const health4 = new HealthPotion(k, [300, 50], inventory);
-  // const health5 = new HealthPotion(k, [400, 100], inventory);
-  // const health6 = new HealthPotion(k, [500, 100], inventory);
-  // const health7 = new HealthPotion(k, [600, 100], inventory);
-  // const health8= new HealthPotion(k, [400, 50], inventory);
-  // const health9= new HealthPotion(k, [500, 50], inventory);
+  const health = itemsProvider.getHealthPotion([400, 100], inventory);
+  const speed = itemsProvider.getFireSpeedPotion([500, 120], inventory);
+  const health1 = itemsProvider.getHealthPotion([122, 100], inventory);
+  const health2 = itemsProvider.getHealthPotion([200, 100], inventory);
+  const health3 = itemsProvider.getHealthPotion([50, 100], inventory);
+  const health4 = itemsProvider.getHealthPotion([300, 50], inventory);
+  const health6 = itemsProvider.getHealthPotion([500, 100], inventory);
+  const health7 = itemsProvider.getHealthPotion([600, 100], inventory);
+  const health8= itemsProvider.getHealthPotion([400, 50], inventory);
+  const health9 = itemsProvider.getHealthPotion([400, 60], inventory);
 
   for (let i = 1; i <= 1; i++) {
     new Shriker(k, [i * 200, 550], player);

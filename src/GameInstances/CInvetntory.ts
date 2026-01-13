@@ -1,21 +1,24 @@
-import { ColorComp, GameObj, KAPLAYCtxT, Key, OutlineComp, PosComp, RectComp, SpriteComp, Vec2 } from "kaplay";
-import { HealthPotion, THealthPotion } from "../Items/healthPotion";
-import { fail } from "node:assert";
+import { GameObj, KAPLAYCtxT, Key, Vec2 } from "kaplay";
 import { TPlayer } from "../Entities/CPlayer";
+import { TItem } from "../Items/CItem";
+import { IItemProvider } from "../Items/ItemProvider";
+import { TItemNames } from "../Items/CItem";
 
 export interface IInventory {
   isInventoryOpen: boolean,
+  isINventoryFull: boolean,
   renderIventory: () => void,
   closeInventory: () => void,
-  equip: (item: THealthPotion) => void,
+  equip: (item: TItem) => void,
   unEquip: (pos: Vec2) => void,
   useItem: (player: TPlayer) => void,
 };
 
 export class Inventory implements IInventory {
   public isInventoryOpen: boolean = false;
+  public isINventoryFull: boolean = false;
   protected currentItem: number[] = [0, 0];
-  protected itemsList: THealthPotion[][] | null[][] = [
+  protected itemsList: TItem[][] | null[][] = [
     [null, null, null],
     [null, null, null],
     [null, null, null],
@@ -26,9 +29,10 @@ export class Inventory implements IInventory {
     [null, null, null],
   ];
   protected inventoryLimit: number = 3;
-
+  
   constructor(
     protected k: KAPLAYCtxT,
+    protected provider: IItemProvider,
   ) {
     const listener = this.k.add([
       k.pos(0, 0),
@@ -139,18 +143,24 @@ export class Inventory implements IInventory {
     this.isInventoryOpen = false;
   }
 
-  equip(item: THealthPotion): void {
+  equip(item: TItem): void {
     this.placeItem(item);
+    this.validateInventory();
     if (this.isInventoryOpen) {
       this.rerenderInventory();
     };
   };
 
+  protected spawnItem(item: TItem, pos: Vec2): TItem{
+    return this.provider.defineItem(item.sprite as TItemNames, pos, this);
+  }
+
   unEquip(pos: Vec2): void {
     const item = this.itemsList[this.currentItem[0]][this.currentItem[1]]; 
     if (item) {
-      const some = new HealthPotion(this.k, [pos.x, pos.y], this);
+      const some = this.spawnItem(item, pos);
       this.itemsList[this.currentItem[0]][this.currentItem[1]] = null;
+      this.isINventoryFull = false;
       this.rerenderInventory();
     };
   };
@@ -158,13 +168,13 @@ export class Inventory implements IInventory {
   useItem(player: TPlayer): void {
     const item = this.itemsList[this.currentItem[0]][this.currentItem[1]];
     if (item) {
-      item.callback(player);
+      item.callback(player, this.k);
       this.itemsList[this.currentItem[0]][this.currentItem[1]] = null;
       this.rerenderInventory();
     };
   };
 
-  protected placeItem(item: THealthPotion): void {
+  protected placeItem(item: TItem): void {
     for (let i = 0; i < this.inventoryLimit; i++) {
       const currentIndex = this.itemsList[i].indexOf(null);
       if (currentIndex !== -1) {
@@ -172,6 +182,16 @@ export class Inventory implements IInventory {
         return;
       };
     };
-    // здесь будет метод для возврата предмета, если нет места в инвентаре
+  };
+
+  protected validateInventory(): void {
+    for (let i = 0; i < this.inventoryLimit; i++) {
+      const currentIndex = this.itemsList[i].indexOf(null);
+      if (currentIndex !== -1) {
+        this.isINventoryFull = false;
+      } else {
+        this.isINventoryFull = true;
+      };
+    };
   };
 };

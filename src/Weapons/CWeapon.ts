@@ -104,5 +104,5 @@ export abstract class Weapon {
 
   getWeapon(): TWeapon {
     return this.weapon;
-  }
+  };
 };
