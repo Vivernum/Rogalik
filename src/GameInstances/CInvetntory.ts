@@ -185,13 +185,18 @@ export class Inventory implements IInventory {
   };
 
   protected validateInventory(): void {
+    const result: boolean[] = [];
     for (let i = 0; i < this.inventoryLimit; i++) {
-      const currentIndex = this.itemsList[i].indexOf(null);
-      if (currentIndex !== -1) {
+      const isThereSpaceLeft = this.itemsList[i].some((item) => item === null);
+      if (isThereSpaceLeft) {
         this.isINventoryFull = false;
+        return;
       } else {
-        this.isINventoryFull = true;
+        result.push(true);
       };
+    };
+    if (result.every((item) => item === true)) {
+      this.isINventoryFull = true;
     };
   };
 };
