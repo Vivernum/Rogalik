@@ -12,7 +12,7 @@ const k = kaplay({
   background: 'black',
 });
 
-k.debug.inspect = true;
+k.debug.inspect = false;
 // k.loadRoot("./"); // A good idea for Itch.io publishing later
 
 const inventory = new Inventory(k);

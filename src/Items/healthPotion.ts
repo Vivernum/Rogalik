@@ -1,9 +1,11 @@
 import { KAPLAYCtxT, GameObj, PosComp, SpriteComp, AreaComp, OpacityComp, ZComp } from "kaplay";
 import { IInventory } from "../GameInstances/CInvetntory";
+import { TPlayer } from "../Entities/CPlayer";
 
 export interface IHealthPotionComp {
   isPickable: boolean,
   isEquipped: boolean,
+  callback: (player: TPlayer) => void,
 };
 
 export type THealthPotion = GameObj<PosComp | SpriteComp | AreaComp | OpacityComp | IHealthPotionComp>;
@@ -42,6 +44,7 @@ export class HealthPotion {
       {
         isPickable: false,
         isEquipped: false,
+        callback: this.callback,
       }
     ]);
 
@@ -59,7 +62,10 @@ export class HealthPotion {
         this.healthPotion.destroy();
       };
     });
+  };
 
+  callback(player: TPlayer): void {
+    player.hp += 30;
   };
 
   // getInstance(): THealthPotion {

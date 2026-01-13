@@ -93,6 +93,10 @@ export class Player implements IPlayerEnemyActions, IPlayerWeaponActions {
       healthBarFill.width = (this.player.hp / this.player.maxHP) * 40;
     });
 
+    this.player.onHeal(() => {
+      healthBarFill.width = (this.player.hp / this.player.maxHP) * 40;
+    })
+
     this.player.onDeath(() => {
       if (this.player.pickedWeapon) this.unEquipWeapon();
       createParticles(k, this.player.pos, 20, k.RED);
@@ -108,9 +112,15 @@ export class Player implements IPlayerEnemyActions, IPlayerWeaponActions {
       }
     });
 
-    this.player.onKeyPress('e', () => {
+    this.player.onKeyPress('f', () => {
       if (this.inventory.isInventoryOpen) {
         this.inventory.unEquip(this.player.pos);
+      };
+    });
+
+    this.player.onKeyPress('e', () => {
+      if (this.inventory.isInventoryOpen) {
+        this.inventory.useItem(this.player);
       };
     })
   };

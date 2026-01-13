@@ -1,6 +1,7 @@
 import { ColorComp, GameObj, KAPLAYCtxT, Key, OutlineComp, PosComp, RectComp, SpriteComp, Vec2 } from "kaplay";
 import { HealthPotion, THealthPotion } from "../Items/healthPotion";
 import { fail } from "node:assert";
+import { TPlayer } from "../Entities/CPlayer";
 
 export interface IInventory {
   isInventoryOpen: boolean,
@@ -8,6 +9,7 @@ export interface IInventory {
   closeInventory: () => void,
   equip: (item: THealthPotion) => void,
   unEquip: (pos: Vec2) => void,
+  useItem: (player: TPlayer) => void,
 };
 
 export class Inventory implements IInventory {
@@ -139,8 +141,6 @@ export class Inventory implements IInventory {
 
   equip(item: THealthPotion): void {
     this.placeItem(item);
-    // item.isEquipped = true;
-    // item.opacity = 0;
     if (this.isInventoryOpen) {
       this.rerenderInventory();
     };
@@ -150,9 +150,15 @@ export class Inventory implements IInventory {
     const item = this.itemsList[this.currentItem[0]][this.currentItem[1]]; 
     if (item) {
       const some = new HealthPotion(this.k, [pos.x, pos.y], this);
-      // item.pos = pos;
-      // item.opacity = 1;
-      // item.isEquipped = false;
+      this.itemsList[this.currentItem[0]][this.currentItem[1]] = null;
+      this.rerenderInventory();
+    };
+  };
+
+  useItem(player: TPlayer): void {
+    const item = this.itemsList[this.currentItem[0]][this.currentItem[1]];
+    if (item) {
+      item.callback(player);
       this.itemsList[this.currentItem[0]][this.currentItem[1]] = null;
       this.rerenderInventory();
     };
