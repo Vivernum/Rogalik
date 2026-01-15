@@ -21,9 +21,10 @@ export class FireSpeedPotion extends Item {
 
   callback(player: TPlayer, k: KAPLAYCtxT): void {
     if (player.pickedWeapon) {
-      player.pickedWeapon.firingFrequency -= 0.2;
+      const weapon = player.pickedWeapon;
+      weapon.firingFrequency -= 0.2;
       setTimeout(() => {
-        player.pickedWeapon.firingFrequency += 0.2;
+        weapon.firingFrequency += 0.2;
       }, 5000);
     }
   };

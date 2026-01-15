@@ -14,6 +14,10 @@ export interface IPlayerWeaponActions {
   unEquipWeapon: () => void,
 };
 
+export interface IHealthPlayerComp {
+  player: TPlayer,
+};
+
 export interface PlayerComp {
   hitCooldown: number,
   lastHitTime: number,
@@ -86,16 +90,6 @@ export class Player implements IPlayerEnemyActions, IPlayerWeaponActions {
         this.player.move(dirs[key].scale(this.player.speed));
       });
     };
-
-    const healthBarFill = createHelthBar(k, this.player, k.vec2(0, -25));
-
-    this.player.onHurt(() => {
-      healthBarFill.width = (this.player.hp / this.player.maxHP) * 40;
-    });
-
-    this.player.onHeal(() => {
-      healthBarFill.width = (this.player.hp / this.player.maxHP) * 40;
-    })
 
     this.player.onDeath(() => {
       if (this.player.pickedWeapon) this.unEquipWeapon();

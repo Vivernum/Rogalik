@@ -1,17 +1,15 @@
-import { KAPLAYCtxT, GameObj, PosComp, HealthComp, AnimateComp } from "kaplay";
+import { KAPLAYCtxT, GameObj, PosComp, HealthComp, AnimateComp, NavMesh, PathfinderComp, PatrolComp } from "kaplay";
 import { createHelthBar } from "../utils/healthBar";
 import { createParticles } from "../utils/collisionParticles";
 import { createCircularParticles } from "../utils/createCircularParticles";
-import { IPlayerEnemyActions } from "./CPlayer";
+import { IPlayerEnemyActions, TPlayer } from "./CPlayer";
 
 export type EnemyActionsPull = 'patrol' | 'return' | 'attack' | 'pursuit';
 
 export interface EnemyComp {
   speed: number;
-  prey: GameObj<PosComp | HealthComp> | null;
+  prey: TPlayer | null;
   attackRange: number;
-  sightRange: number;
-  isInSrartPosition: boolean;
   attackCooldown: number;
   lastAttackTime: number;
   attackDamage: number;
@@ -49,7 +47,7 @@ export class Shriker {
     });
 
     this.enemy = k.add([
-      k.sprite('enemy'),
+      k.sprite('enemy', {anim: 'idle'}),
       k.pos(startingPos[0], startingPos[1]),
       k.anchor(k.vec2(0, 0)),
       k.health(100, 100),
@@ -72,18 +70,15 @@ export class Shriker {
         speed: 150,
         prey: null,
         attackRange: 65,
-        sightRange: 300,
-        isInSrartPosition: false,
         attackCooldown: 1.2,
         lastAttackTime: 0,
         attackDamage: 20,
         attackDuration: 0.5,
         action: 'patrol' as EnemyActionsPull,
-        swordDirection: k.vec2(0, 0),
 
         add() {
           this.onObjectsSpotted((objects: GameObj[]) => {
-            const player = objects.find((o: GameObj) => o.is('player'));
+            const player = objects.find((o: TPlayer) => o.is('player'));
             if(player && this.action !== 'pursuit') {
               this.prey = player;
               this.action = 'pursuit';
@@ -96,34 +91,8 @@ export class Shriker {
           this.lastAttackTime += k.dt();
           // if target exists only then we switch behaviour else we get error which is bad
           if(this.prey) {
-            const player: GameObj<PosComp> = this.prey;
+            const player: TPlayer = this.prey;
             const distance = this.pos.dist(player.pos);
-
-            // this.swordDirection = this.prey.pos.sub(this.pos).unit();
-            // this.attackAngle = this.swordDirection.angle();
-            // if sentry is not in x0y0 position it considered to wandering seeking for player
-            if (
-              this.pos.x !== startingPos[0] &&
-              this.pos.y !== startingPos[1]
-            ) {
-              this.isInSrartPosition = false
-            } else {
-              this.isInSrartPosition = true
-            };
-
-            if (
-              !this.hasLineOfSight(this.prey) &&
-              !this.isInSrartPosition &&
-              this.action !== 'return'
-            ) {
-              this.action = 'return';
-            } else if  (
-              !this.hasLineOfSight(this.prey) &&
-              this.isInSrartPosition &&
-              this.action !== 'patrol'
-            ) {
-              this.action = 'patrol';
-            };
 
             switch(this.action) {
               case 'patrol': {
@@ -133,8 +102,6 @@ export class Shriker {
               case 'pursuit': {
                 if (distance <= this.attackRange) {
                   this.action = 'attack';
-                } else if (distance > this.sightRange) {
-                  this.action = 'return';
                 } else {
                   this.pursuitBehavior(this.prey);
                 };
@@ -148,26 +115,15 @@ export class Shriker {
                 };
                 break;
               };
-              case 'return': {
-                this.returnBehavior();
-                break;
-              };
             };
           };
         },
 
-        patrolBehavior() {
-          this.play('idle');
-        },
-        
-        pursuitBehavior(player: GameObj) {
+        pursuitBehavior(player: TPlayer) {
           this.moveTo(player.pos, this.speed);
         },
-        // нужно будет добавить такие варианты как returning и тд, чтобы оптимизировать операции здесь
-        returnBehavior() {
-          this.moveTo(startingPos[0], startingPos[1], this.speed);
-        },
-        attackBehahivor(player: GameObj<PosComp | HealthComp>) {
+
+        attackBehahivor(player: TPlayer) {
           this.moveTo(player.pos, this.speed);
           if (this.lastAttackTime >= this.attackCooldown) {
             this.play('attack');
