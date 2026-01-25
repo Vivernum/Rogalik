@@ -1,5 +1,5 @@
 import { AnchorComp, ColorComp, GameObj, OpacityComp, OutlineComp, PosComp, ZComp, KAPLAYCtxT, RectComp, TextComp, FixedComp, StayComp } from "kaplay";
-import { IHealthPlayerComp, TPlayer } from "../Entities/CPlayer";
+import { IHealthPlayerComp } from "../Entities/CPlayer";
 
 
 export class PlayersHealthBar {
@@ -52,12 +52,12 @@ export class PlayersHealthBar {
     ]);
 
     this.playerInstance.player.onHurt(() => {
-      this.healthBarFill.width = (this.playerInstance.player.hp / this.playerInstance.player.maxHP) * 32 * 10;
+      this.healthBarFill.width = (this.playerInstance.player.hp / this.playerInstance.player.maxHP) * this.width;
       this.text.text = `${this.playerInstance.player.hp} / ${this.playerInstance.player.maxHP}`;
     });
 
     this.playerInstance.player.onHeal(() => {
-      this.healthBarFill.width = (this.playerInstance.player.hp / this.playerInstance.player.maxHP) * 32 * 10;
+      this.healthBarFill.width = (this.playerInstance.player.hp / this.playerInstance.player.maxHP) * this.width;
       this.text.text = `${this.playerInstance.player.hp} / ${this.playerInstance.player.maxHP}`;
     });
 

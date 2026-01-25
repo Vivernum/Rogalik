@@ -1,6 +1,6 @@
 import kaplay, { HashGrid, NavMesh } from "kaplay";
 
-import { map, map2 } from './Levels/testLevel';
+import { map } from './Levels/testLevel';
 import { createGameLevel } from "./Levels/createGameLevel";
 import { Player} from "./Entities/CPlayer";
 import { Shriker } from "./Entities/CShriker";
@@ -22,22 +22,9 @@ const player = new Player(k, [100, 100], inventory);
 const weaponProvider = new WeaponProvider(k);
 const healthBar = new PlayersHealthBar(k, player);
 
-
-k.scene('secando', () => {
-  const level = createGameLevel(k, map);
-  const health = itemsProvider.getHealthPotion([400, 100], inventory);
-  new Shriker(k, [400, 450], player);
-});
-
 k.scene('begining', () => {
-  k.loadSprite('obstacle', 'sprites/Textures/obstacle.png');
-  let score: number | null = null;
-  k.onUpdate(() => {
-    score = k.get('enemy').length;
-    if (score === 0) k.go('secando');
-  });
 
-  const level = createGameLevel(k, map2);
+  const level = createGameLevel(k, map);
   
   const bazooka = weaponProvider.getBazooka([300, 300], player);
   const kolt = weaponProvider.getKolt([300, 200], player);
@@ -49,12 +36,9 @@ k.scene('begining', () => {
   const health3 = itemsProvider.getFireSpeedPotion([50, 100], inventory);
   const health4 = itemsProvider.getHealthPotion([300, 50], inventory);
 
-  // for (let i = 1; i <= 3; i++) {
-    new Shriker(k, [200, 550], player);
-  // };
-
-  k.onSceneLeave(() => {
-    player.setPosition(500,500);
-  })
+  for (let i = 1; i <= 3; i++) {
+    new Shriker(k, [i * 200, 550], player);
+  };
 });
+
 k.go('begining');

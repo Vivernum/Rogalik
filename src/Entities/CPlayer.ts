@@ -1,5 +1,4 @@
 import { KAPLAYCtxT, GameObj, PosComp, HealthComp, AreaComp } from "kaplay";
-import { createHelthBar } from "../utils/healthBar";
 import { createParticles } from "../utils/collisionParticles";
 import { IInventory } from "../GameInstances/CInvetntory";
 import { TWeapon } from "../Weapons/CWeapon";
