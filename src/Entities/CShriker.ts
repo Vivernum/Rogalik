@@ -4,7 +4,11 @@ import { createParticles } from "../utils/collisionParticles";
 import { createCircularParticles } from "../utils/createCircularParticles";
 import { IPlayerEnemyActions, TPlayer } from "./CPlayer";
 
-export type EnemyActionsPull = 'patrol' | 'return' | 'attack' | 'pursuit';
+export enum EnemyActionsPull {
+  Attack,
+  Patrol,
+  Pursuit,
+};
 
 export interface EnemyComp {
   speed: number;
@@ -74,14 +78,14 @@ export class Shriker {
         lastAttackTime: 0,
         attackDamage: 20,
         attackDuration: 0.5,
-        action: 'patrol' as EnemyActionsPull,
+        action: EnemyActionsPull.Patrol,
 
         add() {
           this.onObjectsSpotted((objects: GameObj[]) => {
             const player = objects.find((o: TPlayer) => o.is('player'));
-            if(player && this.action !== 'pursuit') {
+            if(player && this.action !== EnemyActionsPull.Pursuit) {
               this.prey = player;
-              this.action = 'pursuit';
+              this.action = EnemyActionsPull.Pursuit;
             }
           });
         },
@@ -95,21 +99,21 @@ export class Shriker {
             const distance = this.pos.dist(player.pos);
 
             switch(this.action) {
-              case 'patrol': {
+              case EnemyActionsPull.Patrol: {
                 this.patrolBehavior();
                 break;
               };
-              case 'pursuit': {
+              case EnemyActionsPull.Pursuit: {
                 if (distance <= this.attackRange) {
-                  this.action = 'attack';
+                  this.action = EnemyActionsPull.Attack;
                 } else {
                   this.pursuitBehavior(this.prey);
                 };
                 break;
               };
-              case 'attack': {
+              case EnemyActionsPull.Attack: {
                 if (distance > this.attackRange) {
-                  this.action = 'pursuit';
+                  this.action = EnemyActionsPull.Pursuit;
                 } else {
                   this.attackBehahivor(this.prey);
                 };

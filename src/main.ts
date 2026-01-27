@@ -1,4 +1,4 @@
-import kaplay, { HashGrid, NavMesh } from "kaplay";
+import kaplay from "kaplay";
 
 import { map } from './Levels/testLevel';
 import { createGameLevel } from "./Levels/createGameLevel";

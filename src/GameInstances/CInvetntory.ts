@@ -7,7 +7,7 @@ import { TItemNames } from "../Items/CItem";
 export interface IInventory {
   isInventoryOpen: boolean,
   isINventoryFull: boolean,
-  renderIventory: () => void,
+  openInventory: () => void,
   closeInventory: () => void,
   equip: (item: TItem) => void,
   unEquip: (pos: Vec2) => void,
@@ -50,12 +50,7 @@ export class Inventory implements IInventory {
     });
   };
 
-  protected rerenderInventory(): void {
-    this.closeInventory();
-    this.renderIventory();
-  };
-
-  renderIventory(): void {
+  openInventory(): void {
     for (let i = 0; i < this.inventoryLimit; i++) {
       for (let j = 0; j < this.inventoryLimit; j++) {
         const item = this.k.add([
@@ -69,6 +64,7 @@ export class Inventory implements IInventory {
           this.k.opacity(0.5),
           this.k.anchor('center'),
           this.k.outline(5, this.k.BLACK),
+          // да, здесь присутствуют magic numbers, но мне все равно)
           this.k.pos(90 + 110 * j, this.k.height() - 310 + 110 * i),
         ]);
         if (this.itemsList[i][j]) {
@@ -86,6 +82,21 @@ export class Inventory implements IInventory {
     };
 
     this.isInventoryOpen = true;
+  };
+
+  closeInventory(): void {
+    for (let i = 0; i < this.inventoryLimit; i++) {
+      for (let j = 0; j < this.inventoryLimit; j++) {
+        this.inventory[i][j].destroy();
+        this.inventory[i][j] = null;
+      };
+    };
+    this.isInventoryOpen = false;
+  }
+
+  protected rerenderInventory(): void {
+    this.closeInventory();
+    this.openInventory();
   };
 
   protected swithCurrentItem(key: Key): void {
@@ -133,16 +144,6 @@ export class Inventory implements IInventory {
     };
   };
 
-  closeInventory(): void {
-    for (let i = 0; i < this.inventoryLimit; i++) {
-      for (let j = 0; j < this.inventoryLimit; j++) {
-        this.inventory[i][j].destroy();
-        this.inventory[i][j] = null;
-      };
-    };
-    this.isInventoryOpen = false;
-  }
-
   equip(item: TItem): void {
     this.placeItem(item);
     this.validateInventory();
@@ -150,10 +151,6 @@ export class Inventory implements IInventory {
       this.rerenderInventory();
     };
   };
-
-  protected spawnItem(item: TItem, pos: Vec2): TItem{
-    return this.provider.defineItem(item.sprite as TItemNames, pos, this);
-  }
 
   unEquip(pos: Vec2): void {
     const item = this.itemsList[this.currentItem[0]][this.currentItem[1]]; 
@@ -163,6 +160,10 @@ export class Inventory implements IInventory {
       this.isINventoryFull = false;
       this.rerenderInventory();
     };
+  };
+
+  protected spawnItem(item: TItem, pos: Vec2): TItem{
+    return this.provider.defineItem(item.sprite as TItemNames, pos, this);
   };
 
   useItem(player: TPlayer): void {

@@ -19,8 +19,8 @@ export interface IHealthPlayerComp {
 
 export interface PlayerComp {
   hitCooldown: number,
-  lastHitTime: number,
-  pickedWeapon: null | TWeapon,
+  timePassedSinceLastHit: number,
+  equipedWeapon: null | TWeapon,
   speed: number,
 };
 
@@ -70,8 +70,8 @@ export class Player implements IPlayerEnemyActions, IPlayerWeaponActions {
       'player',
       {
         hitCooldown: 1,
-        lastHitTime: 0,
-        pickedWeapon: null,
+        timePassedSinceLastHit: 0,
+        equipedWeapon: null,
         speed: 200,
 
         update() {
@@ -79,7 +79,7 @@ export class Player implements IPlayerEnemyActions, IPlayerWeaponActions {
           k.setCamScale(2.3);
           k.setCamRot(0);
 
-          this.lastHitTime += k.dt();
+          this.timePassedSinceLastHit += k.dt();
         }
       }
     ]);
@@ -91,7 +91,7 @@ export class Player implements IPlayerEnemyActions, IPlayerWeaponActions {
     };
 
     this.player.onDeath(() => {
-      if (this.player.pickedWeapon) this.unEquipWeapon();
+      if (this.player.equipedWeapon) this.unEquipWeapon();
       createParticles(k, this.player.pos, 20, k.RED);
       this.player.destroy();
     });
@@ -99,7 +99,7 @@ export class Player implements IPlayerEnemyActions, IPlayerWeaponActions {
     // Inventory
     this.player.onKeyPress('i', () => {
       if (!this.inventory.isInventoryOpen) {
-        this.inventory.renderIventory();
+        this.inventory.openInventory();
       } else {
         this.inventory.closeInventory();
       }
@@ -120,9 +120,9 @@ export class Player implements IPlayerEnemyActions, IPlayerWeaponActions {
 
   // Method to handle player damage
   damageHandler(damage: number): void {
-    if (this.player.lastHitTime > this.player.hitCooldown) {
+    if (this.player.timePassedSinceLastHit > this.player.hitCooldown) {
       this.player.hp -= damage;
-      this.player.lastHitTime = 0;
+      this.player.timePassedSinceLastHit = 0;
     } else {
       return;
     };
@@ -130,27 +130,21 @@ export class Player implements IPlayerEnemyActions, IPlayerWeaponActions {
 
 // Methods to equip and unequip weapons
   equipWeapon(weapon: TWeapon): void {
-    if (!this.player.pickedWeapon) {
-      this.player.pickedWeapon = weapon;
-      this.player.pickedWeapon.use(this.k.follow(this.player));
-      this.player.pickedWeapon.anchor = this.k.vec2(-1, 0);
-      this.player.pickedWeapon.isEquipped = true;
+    if (!this.player.equipedWeapon) {
+      this.player.equipedWeapon = weapon;
+      this.player.equipedWeapon.use(this.k.follow(this.player));
+      this.player.equipedWeapon.anchor = this.k.vec2(-1, 0);
+      this.player.equipedWeapon.isEquipped = true;
     }
   };
 
   unEquipWeapon(): void {
-    if (this.player.pickedWeapon) {
-      this.player.pickedWeapon.unuse('follow');
-      this.player.pickedWeapon.anchor = 'center';
-      Math.abs(this.player.pickedWeapon.angle) > 90 ? this.player.pickedWeapon.angle = 180 : this.player.pickedWeapon.angle = 0;
-      this.player.pickedWeapon.isEquipped = false;
-      this.player.pickedWeapon = null;
+    if (this.player.equipedWeapon) {
+      this.player.equipedWeapon.unuse('follow');
+      this.player.equipedWeapon.anchor = 'center';
+      Math.abs(this.player.equipedWeapon.angle) > 90 ? this.player.equipedWeapon.angle = 180 : this.player.equipedWeapon.angle = 0;
+      this.player.equipedWeapon.isEquipped = false;
+      this.player.equipedWeapon = null;
     }
-  };
-
-  // Method to set player position
-  setPosition(x: number, y: number): void {
-    this.player.pos.x = x;
-    this.player.pos.y = y;
   };
 };
