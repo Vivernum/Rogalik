@@ -2,7 +2,7 @@ import { KAPLAYCtxT } from "kaplay";
 import { Item } from "./CItem";
 import { IInventory } from "../GameInstances/CInvetntory";
 import { TItemNames } from "./CItem";
-import { TPlayer } from "../Entities/CPlayer";
+import { TPlayer } from "../types/player";
 
 export class FireSpeedPotion extends Item {
   constructor (

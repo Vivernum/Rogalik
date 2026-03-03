@@ -1,6 +1,6 @@
 import { KAPLAYCtxT } from "kaplay";
 import { IInventory } from "../GameInstances/CInvetntory";
-import { TPlayer } from "../Entities/CPlayer";
+import { TPlayer } from "../types/player";
 import { Item, TItemNames } from "./CItem";
 
 export class HealthPotion extends Item {

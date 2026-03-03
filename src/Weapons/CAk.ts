@@ -1,5 +1,5 @@
 import { KAPLAYCtxT } from "kaplay";
-import { IPlayerWeaponActions } from "../Entities/CPlayer";
+import { IPlayerWeaponActions } from "../types/player";
 import { Weapon } from "./CWeapon";
 
 export class Ak extends Weapon {

@@ -1,30 +1,8 @@
-import { KAPLAYCtxT, GameObj, PosComp, HealthComp, AreaComp } from "kaplay";
+import { KAPLAYCtxT } from "kaplay";
 import { createParticles } from "../utils/collisionParticles";
 import { IInventory } from "../GameInstances/CInvetntory";
 import { TWeapon } from "../Weapons/CWeapon";
-
-export interface IPlayerEnemyActions {
-  damageHandler: (damage: number) => void,
-};
-
-export interface IPlayerWeaponActions {
-  player: TPlayer,
-  equipWeapon: (weapon: TWeapon) => void,
-  unEquipWeapon: () => void,
-};
-
-export interface IHealthPlayerComp {
-  player: TPlayer,
-};
-
-export interface PlayerComp {
-  hitCooldown: number,
-  timePassedSinceLastHit: number,
-  equipedWeapon: null | TWeapon,
-  speed: number,
-};
-
-export type TPlayer = GameObj<PosComp | HealthComp | PlayerComp | AreaComp>;
+import { TPlayer, IPlayerEnemyActions, IPlayerWeaponActions } from "../types/player";
 
 export class Player implements IPlayerEnemyActions, IPlayerWeaponActions {
   player: TPlayer;

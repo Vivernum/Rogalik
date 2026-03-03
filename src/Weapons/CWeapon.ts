@@ -1,5 +1,5 @@
 import { GameObj, PosComp, AreaComp, AnchorComp, RotateComp, KAPLAYCtxT, SpriteComp } from 'kaplay';
-import { IPlayerWeaponActions } from '../Entities/CPlayer';
+import { IPlayerWeaponActions } from '../types/player';
 import { createProjectile } from './Bullets/projectile';
 
 export interface IWeapon {

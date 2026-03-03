@@ -2,7 +2,7 @@ import { KAPLAYCtxT, GameObj, PosComp, HealthComp, AnimateComp, NavMesh, Pathfin
 import { createHelthBar } from "../utils/healthBar";
 import { createParticles } from "../utils/collisionParticles";
 import { createCircularParticles } from "../utils/createCircularParticles";
-import { IPlayerEnemyActions, TPlayer } from "./CPlayer";
+import { IPlayerEnemyActions, TPlayer } from "../types/player";
 
 export enum EnemyActionsPull {
   Attack,

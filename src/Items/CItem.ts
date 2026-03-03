@@ -1,4 +1,4 @@
-import { TPlayer } from "../Entities/CPlayer";
+import { TPlayer } from "../types/player";
 import { IInventory } from "../GameInstances/CInvetntory";
 import { GameObj, PosComp, SpriteComp, AreaComp, OpacityComp, KAPLAYCtxT } from "kaplay";
 

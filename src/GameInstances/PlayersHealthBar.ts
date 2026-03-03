@@ -1,5 +1,5 @@
 import { AnchorComp, ColorComp, GameObj, OpacityComp, OutlineComp, PosComp, ZComp, KAPLAYCtxT, RectComp, TextComp, FixedComp, StayComp } from "kaplay";
-import { IHealthPlayerComp } from "../Entities/CPlayer";
+import { IHealthPlayerComp } from "../types/player";
 
 
 export class PlayersHealthBar {

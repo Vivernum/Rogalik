@@ -1,5 +1,5 @@
 import { GameObj, KAPLAYCtxT, Key, Vec2 } from "kaplay";
-import { TPlayer } from "../Entities/CPlayer";
+import { TPlayer } from "../types/player";
 import { TItem } from "../Items/CItem";
 import { IItemProvider } from "../Items/ItemProvider";
 import { TItemNames } from "../Items/CItem";
