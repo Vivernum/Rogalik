@@ -1,18 +1,24 @@
-import { KAPLAYCtxT } from "kaplay";
+import { KAPLAYCtxT, Vec2 } from "kaplay";
 import { createParticles } from "../utils/collisionParticles";
-import { IInventory } from "../GameInstances/CInvetntory";
 import { TWeapon } from "../Weapons/CWeapon";
 import { TPlayer, IPlayerEnemyActions, IPlayerWeaponActions } from "../types/player";
+import { createProjectile } from "../Weapons/Bullets/projectile";
 
 export class Player implements IPlayerEnemyActions, IPlayerWeaponActions {
-  player: TPlayer;
+  public player: TPlayer;
+  private hitCooldown: number = 1;
+  private timePassedSinceLastHit: number = 0;
+  private equipedWeapon: null | TWeapon = null;
+  private speed: number = 200;
+  private firingTempo: number = 0.5;
+  private lastShotTime: number = 0;
 
   constructor(
     protected k: KAPLAYCtxT,
     protected pos: number[],
-    protected inventory: IInventory,
   ) {
-    const dirs = {
+
+    const movementDirections = {
       'w': k.UP,
       'd': k.RIGHT,
       's': k.DOWN,
@@ -31,6 +37,17 @@ export class Player implements IPlayerEnemyActions, IPlayerWeaponActions {
         }
       }
     });
+    k.loadSprite('projectile', 'sprites/Weapons/attack.png', {
+      sliceX: 5,
+      sliceY: 1,
+      anims: {
+        idle: {
+          from: 0,
+          to: 4,
+          loop: true,
+        }
+      }
+    });
 
     this.player = k.add([
       k.sprite("jotaro", {
@@ -46,83 +63,53 @@ export class Player implements IPlayerEnemyActions, IPlayerWeaponActions {
       }),
       k.body(),
       'player',
-      {
-        hitCooldown: 1,
-        timePassedSinceLastHit: 0,
-        equipedWeapon: null,
-        speed: 200,
-
-        update() {
-          k.setCamPos(this.pos);
-          k.setCamScale(2.3);
-          k.setCamRot(0);
-
-          this.timePassedSinceLastHit += k.dt();
-        }
-      }
     ]);
 
-    for (const key in dirs) {
+    for (const key in movementDirections) {
       this.player.onKeyDown(key, () => {;
-        this.player.move(dirs[key].scale(this.player.speed));
+        this.player.move(movementDirections[key].scale(this.speed));
       });
     };
 
+    this.player.onUpdate(() => {
+      k.setCamPos(this.player.pos);
+      k.setCamScale(2.3);
+      k.setCamRot(0);
+
+      this.timePassedSinceLastHit += k.dt();
+      this.lastShotTime += k.dt();
+
+    });
+
+    this.player.onMouseDown(() => {
+      this.takeShot();
+    });
+
+    this.player.onKeyPress('space', () => {
+      this.takeShot();
+    });
+
+
     this.player.onDeath(() => {
-      if (this.player.equipedWeapon) this.unEquipWeapon();
       createParticles(k, this.player.pos, 20, k.RED);
       this.player.destroy();
     });
-
-    // Inventory
-    this.player.onKeyPress('i', () => {
-      if (!this.inventory.isInventoryOpen) {
-        this.inventory.openInventory();
-      } else {
-        this.inventory.closeInventory();
-      }
-    });
-
-    this.player.onKeyPress('f', () => {
-      if (this.inventory.isInventoryOpen) {
-        this.inventory.unEquip(this.player.pos);
-      };
-    });
-
-    this.player.onKeyPress('e', () => {
-      if (this.inventory.isInventoryOpen) {
-        this.inventory.useItem(this.player);
-      };
-    })
   };
 
   // Method to handle player damage
   damageHandler(damage: number): void {
-    if (this.player.timePassedSinceLastHit > this.player.hitCooldown) {
+    if (this.timePassedSinceLastHit > this.hitCooldown) {
       this.player.hp -= damage;
-      this.player.timePassedSinceLastHit = 0;
+      this.timePassedSinceLastHit = 0;
     } else {
       return;
     };
   };
 
-// Methods to equip and unequip weapons
-  equipWeapon(weapon: TWeapon): void {
-    if (!this.player.equipedWeapon) {
-      this.player.equipedWeapon = weapon;
-      this.player.equipedWeapon.use(this.k.follow(this.player));
-      this.player.equipedWeapon.anchor = this.k.vec2(-1, 0);
-      this.player.equipedWeapon.isEquipped = true;
-    }
-  };
-
-  unEquipWeapon(): void {
-    if (this.player.equipedWeapon) {
-      this.player.equipedWeapon.unuse('follow');
-      this.player.equipedWeapon.anchor = 'center';
-      Math.abs(this.player.equipedWeapon.angle) > 90 ? this.player.equipedWeapon.angle = 180 : this.player.equipedWeapon.angle = 0;
-      this.player.equipedWeapon.isEquipped = false;
-      this.player.equipedWeapon = null;
-    }
+  takeShot(): void {
+    if (this.lastShotTime < this.firingTempo) return;
+    const dir = this.k.toWorld(this.k.mousePos()).sub(this.player.pos).unit().scale(2000);
+    const projectile = createProjectile(this.k, this.player.pos, dir, this.equipedWeapon ? this.equipedWeapon.baseDamage : 20);
+    this.lastShotTime = 0;
   };
 };

@@ -1,4 +1,4 @@
-import { KAPLAYCtxT, GameObj, Vec2, Texture, Quad, SpriteData, Asset } from "kaplay";
+import { KAPLAYCtxT, GameObj, Vec2, Texture, Quad, SpriteData, Asset, HealthComp, PosComp } from "kaplay";
 import { TWeapon } from "../CWeapon";
 
 type TParticlesData = {
@@ -12,13 +12,22 @@ let cachedProjectile: Asset<SpriteData> | null = null;
 export function createProjectile
 (
   k: KAPLAYCtxT,
-  gun: TWeapon,
+  pos: Vec2,
   dir: Vec2,
-  rotation: number,
   damage: number
 ) {
   if (!cachedProjectile) {
-    let projectileData = k.loadSprite('projectile', 'sprites/Weapons/projectile.png');
+    let projectileData = k.loadSprite('projectile', 'sprites/Weapons/projectile.png', {
+      sliceX: 5,
+      sliceY: 1,
+      anims: {
+        idle: {
+          from: 0,
+          to: 4,
+          loop: true,
+        }
+      }
+    });
   
     projectileData.onLoad(() => {
       cachedProjectile = projectileData;
@@ -33,7 +42,7 @@ export function createProjectile
     particlesData = k.loadSprite('particle', 'sprites/Weapons/projectileParticles.png');
     particlesData.onLoad(() => {
       const hexagonSprite = k.getSprite('particle');
-      
+
       cachedParticlesData = {
         texture: hexagonSprite.data.tex,
         quad: [hexagonSprite.data.frames[0]]
@@ -42,13 +51,14 @@ export function createProjectile
   };
 
   const projectile = k.add([
-    k.sprite(cachedProjectile ? cachedProjectile : k.getSprite('projectile')),
-    k.pos(gun.pos),
+    k.sprite(cachedProjectile ? cachedProjectile : k.getSprite('projectile'), {
+      anim: 'idle',
+    }),
+    k.pos(pos),
     k.area(),
     k.move(dir, 400),
     k.offscreen({ destroy: true}),
-    k.rotate(rotation),
-    k.anchor(k.vec2(-10, 0)),
+    k.anchor(k.vec2(0, 0)),
     {
       damage: damage,
       lastPos: null,
@@ -56,7 +66,7 @@ export function createProjectile
     'projectile',
   ]);
 
-  projectile.onCollide((obj: GameObj) => {
+  projectile.onCollide((obj: GameObj<HealthComp | PosComp>) => {
     if
     (
       obj.tags.includes('enemy') ||

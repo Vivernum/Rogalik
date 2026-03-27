@@ -7,19 +7,12 @@ export interface IPlayerEnemyActions {
 
 export interface IPlayerWeaponActions {
   player: TPlayer,
-  equipWeapon: (weapon: TWeapon) => void,
-  unEquipWeapon: () => void,
+  // equipWeapon: (weapon: TWeapon) => void,
+  // unEquipWeapon: () => void,
 };
 
 export interface IHealthPlayerComp {
   player: TPlayer,
 };
 
-export interface PlayerComp {
-  hitCooldown: number,
-  timePassedSinceLastHit: number,
-  equipedWeapon: null | TWeapon,
-  speed: number,
-};
-
-export type TPlayer = GameObj<PosComp | HealthComp | PlayerComp | AreaComp>;
+export type TPlayer = GameObj<PosComp | HealthComp | AreaComp>;
