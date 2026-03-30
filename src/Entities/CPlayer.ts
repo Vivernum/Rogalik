@@ -1,22 +1,38 @@
 import { KAPLAYCtxT, Vec2 } from "kaplay";
 import { createParticles } from "../utils/collisionParticles";
-import { TWeapon } from "../Weapons/CWeapon";
 import { TPlayer, IPlayerEnemyActions, IPlayerWeaponActions } from "../types/player";
 import { createProjectile } from "../Weapons/Bullets/projectile";
+import { AttackStatsType, ResistanceStatsType } from "../types/stats";
+import { IWeapon } from "../types/weapon";
+import { BallsThrower } from "../Weapons/BallsThrower";
 
 export class Player implements IPlayerEnemyActions, IPlayerWeaponActions {
   public player: TPlayer;
   private hitCooldown: number = 1;
   private timePassedSinceLastHit: number = 0;
-  private equipedWeapon: null | TWeapon = null;
-  private speed: number = 200;
-  private firingTempo: number = 0.5;
-  private lastShotTime: number = 0;
+  private walkingSpeed: number = 200;
+  private equipedWeapon: IWeapon;
+  private attackStats: AttackStatsType = {
+    physicalDamage: 20,
+    fireDamageMultiplier: 1,
+    coldDamageMultiplier: 1,
+    darkDamageMultiplier: 1,
+    lightDamageMultiplier: 1,
+  };
+  private resistanceStats: ResistanceStatsType = {
+    physicalResistance: 0,
+    fireResistanceMultiplier: 0,
+    coldResistanceMultiplier: 0,
+    darkResistanceMultiplier: 0,
+    lightResistanceMultiplier: 0,
+  };
 
   constructor(
     protected k: KAPLAYCtxT,
     protected pos: number[],
   ) {
+
+    this.equipedWeapon = new BallsThrower(this.k);
 
     const movementDirections = {
       'w': k.UP,
@@ -59,7 +75,7 @@ export class Player implements IPlayerEnemyActions, IPlayerWeaponActions {
       k.opacity(1),
       k.stay(),
       k.area({
-        shape: new k.Circle(k.vec2(0, 0), 16),
+        shape: new k.Circle(k.vec2(0, 0), 14),
       }),
       k.body(),
       'player',
@@ -67,7 +83,7 @@ export class Player implements IPlayerEnemyActions, IPlayerWeaponActions {
 
     for (const key in movementDirections) {
       this.player.onKeyDown(key, () => {;
-        this.player.move(movementDirections[key].scale(this.speed));
+        this.player.move(movementDirections[key].scale(this.walkingSpeed));
       });
     };
 
@@ -77,16 +93,15 @@ export class Player implements IPlayerEnemyActions, IPlayerWeaponActions {
       k.setCamRot(0);
 
       this.timePassedSinceLastHit += k.dt();
-      this.lastShotTime += k.dt();
 
     });
 
     this.player.onMouseDown(() => {
-      this.takeShot();
+      this.useWeapon();
     });
 
     this.player.onKeyPress('space', () => {
-      this.takeShot();
+      this.useWeapon();
     });
 
 
@@ -106,10 +121,9 @@ export class Player implements IPlayerEnemyActions, IPlayerWeaponActions {
     };
   };
 
-  takeShot(): void {
-    if (this.lastShotTime < this.firingTempo) return;
-    const dir = this.k.toWorld(this.k.mousePos()).sub(this.player.pos).unit().scale(2000);
-    const projectile = createProjectile(this.k, this.player.pos, dir, this.equipedWeapon ? this.equipedWeapon.baseDamage : 20);
-    this.lastShotTime = 0;
+  useWeapon(): void {
+    const shotDirection = this.k.toWorld(this.k.mousePos()).sub(this.player.pos).unit().scale(2000);
+    const shotAngle = this.k.toWorld(this.k.mousePos()).sub(this.player.pos).angle()
+    this.equipedWeapon.takeShot(this.player.pos, shotDirection, shotAngle)
   };
 };

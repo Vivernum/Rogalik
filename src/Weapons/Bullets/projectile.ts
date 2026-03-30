@@ -1,10 +1,12 @@
 import { KAPLAYCtxT, GameObj, Vec2, Texture, Quad, SpriteData, Asset, HealthComp, PosComp } from "kaplay";
-import { TWeapon } from "../CWeapon";
 
 type TParticlesData = {
   texture: Texture;
   quad: Quad[];
 };
+
+const PROJECTILE_RADIUS = 6;
+const PROJECTILE_SPEED = 500;
 
 let cachedParticlesData: TParticlesData | null = null;
 let cachedProjectile: Asset<SpriteData> | null = null;
@@ -14,17 +16,24 @@ export function createProjectile
   k: KAPLAYCtxT,
   pos: Vec2,
   dir: Vec2,
+  angle: number,
   damage: number
 ) {
   if (!cachedProjectile) {
-    let projectileData = k.loadSprite('projectile', 'sprites/Weapons/projectile.png', {
-      sliceX: 5,
+    let projectileData = k.loadSprite('projectile', 'sprites/Weapons/basicProjectile.png', {
+      sliceX: 16,
       sliceY: 1,
       anims: {
         idle: {
           from: 0,
-          to: 4,
+          to: 7,
           loop: true,
+          speed: 40,
+        },
+        splash: {
+          from: 8,
+          to: 15,
+          speed: 30,
         }
       }
     });
@@ -55,8 +64,11 @@ export function createProjectile
       anim: 'idle',
     }),
     k.pos(pos),
-    k.area(),
-    k.move(dir, 400),
+    k.rotate(angle),
+    k.area({
+        shape: new k.Circle(k.vec2(0, 0), PROJECTILE_RADIUS),
+      }),
+    k.move(dir, PROJECTILE_SPEED),
     k.offscreen({ destroy: true}),
     k.anchor(k.vec2(0, 0)),
     {

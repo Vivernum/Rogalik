@@ -1,4 +1,3 @@
-import { TWeapon } from "../Weapons/CWeapon";
 import { GameObj, PosComp, HealthComp, AreaComp } from "kaplay";
 
 export interface IPlayerEnemyActions {

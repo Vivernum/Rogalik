@@ -4,8 +4,6 @@ import { map } from './Levels/testLevel';
 import { createGameLevel } from "./Levels/createGameLevel";
 import { Player} from "./Entities/CPlayer";
 import { Shriker } from "./Entities/CShriker";
-import { Inventory } from "./GameInstances/CInvetntory";
-import { WeaponProvider } from "./Weapons/WeaponProvider";
 import { PlayersHealthBar } from "./GameInstances/PlayersHealthBar";
 
 const k = kaplay({
@@ -15,7 +13,6 @@ const k = kaplay({
 k.debug.inspect = false;
 // k.loadRoot("./"); // A good idea for Itch.io publishing later
 const player = new Player(k, [500, 500]);
-const weaponProvider = new WeaponProvider(k);
 const healthBar = new PlayersHealthBar(k, player);
 
 k.scene('begining', () => {
