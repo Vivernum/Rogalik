@@ -1,6 +1,6 @@
 import { KAPLAYCtxT, Vec2 } from "kaplay";
 import { Weapon } from "./Weapon";
-import { createProjectile } from "./Bullets/projectile";
+import { createBallsThrowerProjectile } from "../projectiles/createBallsThrowerProjectile";
 
 
 export class BallsThrower extends Weapon {
@@ -20,7 +20,7 @@ export class BallsThrower extends Weapon {
   ) {
     // console.log(this.timePassedSinceLastShot)
     if (this.timePassedSinceLastShot < this.firingRate) return;
-    createProjectile(this.k, pos, dir, angle, this.damage);
+    createBallsThrowerProjectile(this.k, pos, dir, angle, this.damage);
     this.timePassedSinceLastShot = 0;
   };
 };
