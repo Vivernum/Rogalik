@@ -1,13 +1,18 @@
-import { KAPLAYCtxT } from "kaplay";
+import { KAPLAYCtxT, Vec2 } from "kaplay";
 import { createParticles } from "../utils/collisionParticles";
 import {
   TPlayer,
   IPlayerEnemyActions,
   IPlayerWeaponActions,
 } from "../types/player";
-import { AttackStatsType, ResistanceStatsType } from "../types/stats";
 import { IWeapon } from "../types/weapon";
 import { BallsThrower } from "../Weapons/BallsThrower";
+import { calculateReceivedDamage } from "../utils/damageController";
+import {
+  AllDamageTypes,
+  PlayersStatsType,
+  ResistanceType,
+} from "../types/stats";
 
 export class Player implements IPlayerEnemyActions, IPlayerWeaponActions {
   public player: TPlayer;
@@ -15,28 +20,27 @@ export class Player implements IPlayerEnemyActions, IPlayerWeaponActions {
   private timePassedSinceLastHit: number = 0;
   private walkingSpeed: number = 200;
   private equipedWeapon: IWeapon;
-  private attackStats: AttackStatsType = {
-    physicalDamage: 20,
-    fireDamageMultiplier: 1,
-    coldDamageMultiplier: 1,
-    darkDamageMultiplier: 1,
-    lightDamageMultiplier: 1,
+  private attackStats: PlayersStatsType = {
+    fireDamage: 0,
+    coldDamage: 0,
+    darkDamage: 0,
+    lightDamage: 0,
   };
-  private resistanceStats: ResistanceStatsType = {
+  private resistanceStats: ResistanceType = {
     physicalResistance: 0,
-    fireResistanceMultiplier: 0,
-    coldResistanceMultiplier: 0,
-    darkResistanceMultiplier: 0,
-    lightResistanceMultiplier: 0,
+    fireResistance: 0,
+    coldResistance: 0,
+    darkResistance: 0,
+    lightResistance: 0,
   };
 
   constructor(
     protected k: KAPLAYCtxT,
-    protected pos: number[],
+    protected position: number[],
   ) {
     this.equipedWeapon = new BallsThrower(this.k);
 
-    const movementDirections = {
+    const movementDirections: Record<string, Vec2> = {
       w: k.UP,
       d: k.RIGHT,
       s: k.DOWN,
@@ -71,7 +75,7 @@ export class Player implements IPlayerEnemyActions, IPlayerWeaponActions {
       k.sprite("jotaro", {
         anim: "idle",
       }),
-      k.pos(this.pos[0], this.pos[1]),
+      k.pos(this.position[0], this.position[1]),
       k.health(100, 100),
       k.anchor("center"),
       k.opacity(1),
@@ -112,13 +116,15 @@ export class Player implements IPlayerEnemyActions, IPlayerWeaponActions {
   }
 
   // Method to handle player damage
-  damageHandler(damage: number): void {
+  damageHandler(attackStats: AllDamageTypes): void {
     if (this.timePassedSinceLastHit > this.hitCooldown) {
-      this.player.hp -= damage;
+      this.player.hp -= calculateReceivedDamage(
+        attackStats,
+        this.resistanceStats,
+      );
       this.timePassedSinceLastHit = 0;
-    } else {
-      return;
     }
+    return;
   }
 
   useWeapon(): void {
@@ -131,6 +137,11 @@ export class Player implements IPlayerEnemyActions, IPlayerWeaponActions {
       .toWorld(this.k.mousePos())
       .sub(this.player.pos)
       .angle();
-    this.equipedWeapon.takeShot(this.player.pos, shotDirection, shotAngle);
+    this.equipedWeapon.takeShot(
+      this.player.pos,
+      shotDirection,
+      shotAngle,
+      this.attackStats,
+    );
   }
 }

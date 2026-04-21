@@ -1,15 +1,20 @@
-export type AttackStatsType = {
-  physicalDamage: number;
-  fireDamageMultiplier: number;
-  coldDamageMultiplier: number;
-  darkDamageMultiplier: number;
-  lightDamageMultiplier: number;
+export type PlayersStatsType = {
+  fireDamage: number;
+  coldDamage: number;
+  darkDamage: number;
+  lightDamage: number;
 };
 
-export type ResistanceStatsType = {
+type PhysicalDamage = {
+  physicalDamage: number;
+};
+
+export type AllDamageTypes = Partial<PhysicalDamage & PlayersStatsType>;
+
+export type ResistanceType = {
   physicalResistance: number;
-  fireResistanceMultiplier: number;
-  coldResistanceMultiplier: number;
-  darkResistanceMultiplier: number;
-  lightResistanceMultiplier: number;
+  fireResistance: number;
+  coldResistance: number;
+  darkResistance: number;
+  lightResistance: number;
 };
