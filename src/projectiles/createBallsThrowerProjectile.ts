@@ -4,11 +4,21 @@ import {
   Vec2,
   SpriteData,
   Asset,
-  HealthComp,
   PosComp,
+  AreaComp,
+  SpriteComp,
 } from "kaplay";
 import { TParticlesData } from "../types/particles";
 import { createProjectileParticles } from "../particles/createProjectileParticles";
+import { AllDamageTypes } from "../types/stats";
+
+type ProjectileComp = {
+  damage: AllDamageTypes;
+  lastPosition: Vec2;
+};
+type TProjectile = GameObj<
+  PosComp | AreaComp | PosComp | SpriteComp | ProjectileComp
+>;
 
 const PROJECTILE_RADIUS = 6;
 const PROJECTILE_SPEED = 500;
@@ -18,10 +28,10 @@ let cachedProjectile: Asset<SpriteData> | null = null;
 
 export function createBallsThrowerProjectile(
   k: KAPLAYCtxT,
-  pos: Vec2,
-  dir: Vec2,
+  position: Vec2,
+  direction: Vec2,
   angle: number,
-  damage: number,
+  damage: AllDamageTypes,
 ) {
   if (!cachedProjectile) {
     let projectileData = k.loadSprite(
@@ -64,45 +74,52 @@ export function createBallsThrowerProjectile(
       const hexagonSprite = k.getSprite("particle");
 
       cachedParticlesData = {
-        texture: hexagonSprite.data.tex,
-        quad: [hexagonSprite.data.frames[0]],
+        texture: hexagonSprite!.data!.tex,
+        quad: [hexagonSprite!.data!.frames[0]],
       };
     });
   }
 
-  const projectile = k.add([
-    k.sprite(cachedProjectile ? cachedProjectile : k.getSprite("projectile"), {
-      anim: "idle",
-    }),
-    k.pos(pos),
+  const projectile: TProjectile = k.add([
+    k.sprite(
+      cachedProjectile !== null ? cachedProjectile : k.getSprite("projectile"),
+      {
+        anim: "idle",
+      },
+    ),
+    k.pos(position),
     k.rotate(angle),
     k.area({
       shape: new k.Circle(k.vec2(0, 0), PROJECTILE_RADIUS),
     }),
-    k.move(dir, PROJECTILE_SPEED),
+    k.move(direction, PROJECTILE_SPEED),
     k.offscreen({ destroy: true }),
     k.anchor(k.vec2(0, 0)),
     {
-      damage: damage,
-      lastPos: null,
+      damage,
+      lastPosition: k.vec2(0, 0),
     },
     "projectile",
   ]);
 
-  projectile.onCollide((obj: GameObj<HealthComp | PosComp>) => {
-    if (
-      obj.tags.includes("enemy") ||
-      obj.tags.includes("wall") ||
-      obj.tags.includes("obstacle")
-    ) {
-      obj.hp -= damage;
+  projectile.onCollide((obj: GameObj) => {
+    if (obj.tags.includes("enemy")) {
+      obj.takeDamage(projectile.damage);
       // @FIXME: probably this cause particles appear in 0:0 if
       // collision appears to be out of the screen
       const collisionCenter = k.vec2(
         (projectile.pos.x + obj.pos.x) / 2,
         (projectile.pos.y + obj.pos.y) / 2,
       );
-      projectile.lastPos = collisionCenter;
+      projectile.lastPosition = collisionCenter;
+      projectile.destroy();
+    }
+    if (obj.tags.includes("wall") || obj.tags.includes("obstacle")) {
+      const collisionCenter = k.vec2(
+        (projectile.pos.x + obj.pos.x) / 2,
+        (projectile.pos.y + obj.pos.y) / 2,
+      );
+      projectile.lastPosition = collisionCenter;
       projectile.destroy();
     }
   });
@@ -111,8 +128,8 @@ export function createBallsThrowerProjectile(
     if (cachedParticlesData) {
       createProjectileParticles(
         k,
-        projectile.lastPos,
-        dir,
+        projectile.lastPosition,
+        direction,
         cachedParticlesData,
       );
     } else return;

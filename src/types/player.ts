@@ -1,17 +1,18 @@
 import { GameObj, PosComp, HealthComp, AreaComp } from "kaplay";
+import { AllDamageTypes } from "./stats";
 
 export interface IPlayerEnemyActions {
-  damageHandler: (damage: number) => void,
-};
+  damageHandler: (attackStats: AllDamageTypes) => void;
+}
 
 export interface IPlayerWeaponActions {
-  player: TPlayer,
+  player: TPlayer;
   // equipWeapon: (weapon: TWeapon) => void,
   // unEquipWeapon: () => void,
-};
+}
 
 export interface IHealthPlayerComp {
-  player: TPlayer,
-};
+  player: TPlayer;
+}
 
 export type TPlayer = GameObj<PosComp | HealthComp | AreaComp>;
