@@ -5,7 +5,7 @@ import { AllDamageTypes, PlayersStatsType } from "../types/stats";
 
 export class BallsThrower extends Weapon {
   firingRate: number = 0.4;
-  damage: Partial<AllDamageTypes> = {
+  damage: AllDamageTypes = {
     physicalDamage: 20,
   };
 

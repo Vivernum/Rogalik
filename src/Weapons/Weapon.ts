@@ -5,7 +5,7 @@ import { AllDamageTypes, PlayersStatsType } from "../types/stats";
 export abstract class Weapon implements IWeapon {
   timePassedSinceLastShot: number = 0;
   firingRate!: number;
-  damage!: Partial<AllDamageTypes>;
+  damage!: AllDamageTypes;
   constructor(public k: KAPLAYCtxT) {
     const listener = this.k.add([
       k.pos(0, 0),

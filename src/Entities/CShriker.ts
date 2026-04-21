@@ -167,7 +167,8 @@ export class Shriker {
           }
         },
 
-        takeDamage(damage: Partial<AllDamageTypes>) {
+
+        takeDamage(damage: AllDamageTypes) {
           this.hp -= calculateReceivedDamage(damage, this.resistanceStats);
         },
       },
