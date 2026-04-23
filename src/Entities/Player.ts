@@ -10,8 +10,6 @@ import { BallsThrower } from "../Weapons/BallsThrower";
 import { calculateReceivedDamage } from "../utils/calculateRecievedDamage";
 import {
   PartialEnemyAttackStatsType,
-  PlayersAtackStatsType,
-  ResistanceType,
 } from "../types/stats";
 import { IPlayersAttackStatsController, IResistanceStatsController } from "../types/controllers";
 import { PlayerAttackStatsController } from "../utils/controllers/attackStatsControllers";

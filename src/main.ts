@@ -2,8 +2,8 @@ import kaplay from "kaplay";
 
 import { map } from './Levels/testLevel';
 import { createGameLevel } from "./Levels/createGameLevel";
-import { Player} from "./Entities/CPlayer";
-import { Shriker } from "./Entities/CShriker";
+import { Player} from "./Entities/Player";
+import { createShriker } from "./Entities/Shriker";
 import { PlayersHealthBar } from "./GameInstances/PlayersHealthBar";
 
 const k = kaplay({
@@ -20,7 +20,7 @@ k.scene('begining', () => {
   const level = createGameLevel(k, map);
 
   for (let i = 1; i <= 3; i++) {
-    new Shriker(k, [i * 200, 550], player);
+    createShriker(k, [i * 200, 550], player);
   };
 });
 
