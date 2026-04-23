@@ -10,10 +10,10 @@ import {
 } from "kaplay";
 import { TParticlesData } from "../types/particles";
 import { createProjectileParticles } from "../particles/createProjectileParticles";
-import { AllDamageTypes } from "../types/stats";
+import { PartialAllAttackStatsType } from "../types/stats";
 
 type ProjectileComp = {
-  damage: AllDamageTypes;
+  damage: PartialAllAttackStatsType;
   lastPosition: Vec2;
 };
 type TProjectile = GameObj<
@@ -31,7 +31,7 @@ export function createBallsThrowerProjectile(
   position: Vec2,
   direction: Vec2,
   angle: number,
-  damage: AllDamageTypes,
+  damage: PartialAllAttackStatsType,
 ) {
   if (!cachedProjectile) {
     let projectileData = k.loadSprite(

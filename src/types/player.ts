@@ -1,8 +1,8 @@
 import { GameObj, PosComp, HealthComp, AreaComp } from "kaplay";
-import { AllDamageTypes } from "./stats";
+import { PartialEnemyAttackStatsType } from "./stats";
 
 export interface IPlayerEnemyActions {
-  damageHandler: (attackStats: AllDamageTypes) => void;
+  damageHandler: (attackStats: PartialEnemyAttackStatsType) => void;
 }
 
 export interface IPlayerWeaponActions {

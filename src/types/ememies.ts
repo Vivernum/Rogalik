@@ -1,6 +1,10 @@
 import { GameObj, HealthComp, PosComp } from "kaplay";
 import { TPlayer } from "./player";
-import { AllDamageTypes, ResistanceType } from "./stats";
+import {
+  IEnemyAttackStatsController,
+  IPlayersAttackStatsController,
+  IResistanceStatsController,
+} from "./controllers";
 
 export enum EnemyActionsPull {
   Attack,
@@ -14,8 +18,8 @@ export interface EnemyComp {
   attackRange: number;
   attackCooldown: number;
   lastAttackTime: number;
-  attackStats: AllDamageTypes;
-  resistanceStats: ResistanceType;
+  attackStatsController: IEnemyAttackStatsController;
+  resistanceStatsController: IResistanceStatsController;
   attackDuration: number;
   action: EnemyActionsPull;
 }

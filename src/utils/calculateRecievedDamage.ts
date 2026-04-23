@@ -1,8 +1,8 @@
-import { AllDamageTypes, ResistanceType } from "../types/stats";
+import { PartialAllAttackStatsType, ResistanceType } from "../types/stats";
 import { damageToResistance } from "./keyMaps";
 
 export function calculateReceivedDamage(
-  damage: AllDamageTypes,
+  damage: PartialAllAttackStatsType,
   resistance: ResistanceType,
 ): number {
   let result = 0;

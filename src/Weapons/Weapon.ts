@@ -1,11 +1,11 @@
 import { KAPLAYCtxT, Vec2 } from "kaplay";
 import { IWeapon } from "../types/weapon";
-import { AllDamageTypes, PlayersStatsType } from "../types/stats";
+import { PartialAllAttackStatsType, PlayersAtackStatsType } from "../types/stats";
 
 export abstract class Weapon implements IWeapon {
   timePassedSinceLastShot: number = 0;
   firingRate!: number;
-  damage!: AllDamageTypes;
+  damage!: PartialAllAttackStatsType;
   constructor(public k: KAPLAYCtxT) {
     const listener = this.k.add([
       k.pos(0, 0),
@@ -25,6 +25,6 @@ export abstract class Weapon implements IWeapon {
     position: Vec2,
     direction: Vec2,
     angle: number,
-    attackStats: PlayersStatsType,
+    attackStats: PlayersAtackStatsType,
   ) {}
 }

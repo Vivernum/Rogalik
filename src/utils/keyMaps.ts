@@ -1,5 +1,5 @@
 export const damageToResistance = new Map([
-  ["physicalDamage", "physicalResistance"],
+  ["physicalDamage", "armor"],
   ["fireDamage", "fireResistance"],
   ["coldDamage", "coldResistance"],
   ["darkDamage", "darkResistance"],

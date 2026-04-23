@@ -10,7 +10,7 @@ const k = kaplay({
   background: 'black',
 });
 
-k.debug.inspect = false;
+// k.debug.inspect = true;
 // k.loadRoot("./"); // A good idea for Itch.io publishing later
 const player = new Player(k, [500, 500]);
 const healthBar = new PlayersHealthBar(k, player);
@@ -19,9 +19,9 @@ k.scene('begining', () => {
 
   const level = createGameLevel(k, map);
 
-  // for (let i = 1; i <= 3; i++) {
-  //   new Shriker(k, [i * 200, 550], player);
-  // };
+  for (let i = 1; i <= 3; i++) {
+    new Shriker(k, [i * 200, 550], player);
+  };
 });
 
 k.go('begining');

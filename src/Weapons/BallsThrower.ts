@@ -1,11 +1,11 @@
 import { KAPLAYCtxT, Vec2 } from "kaplay";
 import { Weapon } from "./Weapon";
 import { createBallsThrowerProjectile } from "../projectiles/createBallsThrowerProjectile";
-import { AllDamageTypes, PlayersStatsType } from "../types/stats";
+import { PartialAllAttackStatsType, PlayersAtackStatsType } from "../types/stats";
 
 export class BallsThrower extends Weapon {
   firingRate: number = 0.4;
-  damage: AllDamageTypes = {
+  damage: PartialAllAttackStatsType = {
     physicalDamage: 20,
   };
 
@@ -17,7 +17,7 @@ export class BallsThrower extends Weapon {
     position: Vec2,
     direction: Vec2,
     angle: number,
-    attackStats: PlayersStatsType,
+    attackStats: PlayersAtackStatsType,
   ) {
     if (this.timePassedSinceLastShot < this.firingRate) return;
     createBallsThrowerProjectile(
@@ -25,7 +25,10 @@ export class BallsThrower extends Weapon {
       position,
       direction,
       angle,
-      this.damage,
+      {
+        ...attackStats,
+        ...this.damage,
+      },
     );
     this.timePassedSinceLastShot = 0;
   }

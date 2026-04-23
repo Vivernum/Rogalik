@@ -7,12 +7,15 @@ import {
 } from "../types/player";
 import { IWeapon } from "../types/weapon";
 import { BallsThrower } from "../Weapons/BallsThrower";
-import { calculateReceivedDamage } from "../utils/damageController";
+import { calculateReceivedDamage } from "../utils/calculateRecievedDamage";
 import {
-  AllDamageTypes,
-  PlayersStatsType,
+  PartialEnemyAttackStatsType,
+  PlayersAtackStatsType,
   ResistanceType,
 } from "../types/stats";
+import { IPlayersAttackStatsController, IResistanceStatsController } from "../types/controllers";
+import { PlayerAttackStatsController } from "../utils/controllers/attackStatsControllers";
+import ResistanceStatsController from "../utils/controllers/resistanceStatsController";
 
 export class Player implements IPlayerEnemyActions, IPlayerWeaponActions {
   public player: TPlayer;
@@ -20,19 +23,8 @@ export class Player implements IPlayerEnemyActions, IPlayerWeaponActions {
   private timePassedSinceLastHit: number = 0;
   private walkingSpeed: number = 200;
   private equipedWeapon: IWeapon;
-  private attackStats: PlayersStatsType = {
-    fireDamage: 0,
-    coldDamage: 0,
-    darkDamage: 0,
-    lightDamage: 0,
-  };
-  private resistanceStats: ResistanceType = {
-    physicalResistance: 0,
-    fireResistance: 0,
-    coldResistance: 0,
-    darkResistance: 0,
-    lightResistance: 0,
-  };
+  private attackStatsController: IPlayersAttackStatsController = new PlayerAttackStatsController();
+  private resistanceStatsController: IResistanceStatsController = new ResistanceStatsController();
 
   constructor(
     protected k: KAPLAYCtxT,
@@ -116,11 +108,11 @@ export class Player implements IPlayerEnemyActions, IPlayerWeaponActions {
   }
 
   // Method to handle player damage
-  damageHandler(attackStats: AllDamageTypes): void {
+  damageHandler(attackStats: PartialEnemyAttackStatsType): void {
     if (this.timePassedSinceLastHit > this.hitCooldown) {
       this.player.hp -= calculateReceivedDamage(
         attackStats,
-        this.resistanceStats,
+        this.resistanceStatsController.getResistanceStats(),
       );
       this.timePassedSinceLastHit = 0;
     }
@@ -141,7 +133,7 @@ export class Player implements IPlayerEnemyActions, IPlayerWeaponActions {
       this.player.pos,
       shotDirection,
       shotAngle,
-      this.attackStats,
+      this.attackStatsController.getDamageStats(),
     );
   }
 }

@@ -5,8 +5,10 @@ import { createCircularParticles } from "../utils/createCircularParticles";
 import { IPlayerEnemyActions, TPlayer } from "../types/player";
 import { TShriker } from "../types/ememies";
 import { EnemyActionsPull } from "../types/ememies";
-import { AllDamageTypes } from "../types/stats";
-import { calculateReceivedDamage } from "../utils/damageController";
+import { PartialAllAttackStatsType } from "../types/stats";
+import { calculateReceivedDamage } from "../utils/calculateRecievedDamage";
+import { EnemyAttackStatsController } from "../utils/controllers/attackStatsControllers";
+import ResistanceStatsController from "../utils/controllers/resistanceStatsController";
 
 export class Shriker {
   protected enemy: TShriker;
@@ -64,20 +66,8 @@ export class Shriker {
         attackRange: 65,
         attackCooldown: 1.2,
         lastAttackTime: 0,
-        attackStats: {
-          physicalDamage: 20,
-          fireDamage: 0,
-          coldDamage: 0,
-          darkDamage: 0,
-          lightDamager: 0,
-        },
-        resistanceStats: {
-          physicalResistance: 0,
-          fireResistance: 0,
-          coldResistance: 0,
-          darkResistance: 0,
-          lightResistance: 0,
-        },
+        attackStatsController: new EnemyAttackStatsController(),
+        resistanceStatsController: new ResistanceStatsController(),
         attackDuration: 0.5,
         action: EnemyActionsPull.Patrol,
 
@@ -167,9 +157,11 @@ export class Shriker {
           }
         },
 
-
-        takeDamage(damage: AllDamageTypes) {
-          this.hp -= calculateReceivedDamage(damage, this.resistanceStats);
+        takeDamage(damage: PartialAllAttackStatsType) {
+          this.hp -= calculateReceivedDamage(
+            damage,
+            this.resistanceStatsController.getResistanceStats(),
+          );
         },
       },
     ]);
@@ -191,7 +183,9 @@ export class Shriker {
     ]);
 
     hittingCircle.onCollide("player", () => {
-      this.player.damageHandler(this.enemy.attackStats);
+      this.player.damageHandler(
+        this.enemy.attackStatsController.getDamageStats(),
+      );
     });
 
     this.enemy.onHurt(() => {
