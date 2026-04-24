@@ -1,11 +1,14 @@
 import { KAPLAYCtxT, Vec2 } from "kaplay";
 import { IWeapon } from "../types/weapon";
 import { PartialAllAttackStatsType, PlayersAtackStatsType } from "../types/stats";
+import { EffectCallbackResultType } from "../types/effect";
+import { EnemyComp } from "../types/ememies";
 
 export abstract class Weapon implements IWeapon {
   timePassedSinceLastShot: number = 0;
   firingRate!: number;
   damage!: PartialAllAttackStatsType;
+  effectCallback!: (entity: EnemyComp) => EffectCallbackResultType;
   constructor(public k: KAPLAYCtxT) {
     const listener = this.k.add([
       k.pos(0, 0),

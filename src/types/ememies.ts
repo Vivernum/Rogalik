@@ -5,6 +5,8 @@ import {
   IPlayersAttackStatsController,
   IResistanceStatsController,
 } from "./controllers";
+import { EffectsType, EnemyUseEffectCallbackType, IEffectController } from "./effect";
+import { PartialAllAttackStatsType } from "./stats";
 
 export enum EnemyActionsPull {
   Attack,
@@ -20,8 +22,10 @@ export interface EnemyComp {
   lastAttackTime: number;
   attackStatsController: IEnemyAttackStatsController;
   resistanceStatsController: IResistanceStatsController;
+  effectsController: IEffectController;
   attackDuration: number;
   action: EnemyActionsPull;
+  takeDamage: (damage: PartialAllAttackStatsType, callbackFn: EnemyUseEffectCallbackType, effectType: EffectsType) => void;
 }
 
 export type TShriker = GameObj<PosComp | HealthComp | EnemyComp>;

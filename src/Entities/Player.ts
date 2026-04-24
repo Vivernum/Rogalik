@@ -4,6 +4,7 @@ import {
   TPlayer,
   IPlayerEnemyActions,
   IPlayerWeaponActions,
+  IPlayer,
 } from "../types/player";
 import { IWeapon } from "../types/weapon";
 import { BallsThrower } from "../Weapons/BallsThrower";
@@ -15,14 +16,14 @@ import { IPlayersAttackStatsController, IResistanceStatsController } from "../ty
 import { PlayerAttackStatsController } from "../utils/controllers/attackStatsControllers";
 import ResistanceStatsController from "../utils/controllers/resistanceStatsController";
 
-export class Player implements IPlayerEnemyActions, IPlayerWeaponActions {
+export class Player implements IPlayer {
   public player: TPlayer;
-  private hitCooldown: number = 1;
-  private timePassedSinceLastHit: number = 0;
-  private walkingSpeed: number = 200;
-  private equipedWeapon: IWeapon;
-  private attackStatsController: IPlayersAttackStatsController = new PlayerAttackStatsController();
-  private resistanceStatsController: IResistanceStatsController = new ResistanceStatsController();
+  public hitCooldown: number = 1;
+  public timePassedSinceLastHit: number = 0;
+  public speed: number = 200;
+  public equipedWeapon: IWeapon;
+  public attackStatsController: IPlayersAttackStatsController = new PlayerAttackStatsController();
+  public resistanceStatsController: IResistanceStatsController = new ResistanceStatsController();
 
   constructor(
     protected k: KAPLAYCtxT,
@@ -79,7 +80,7 @@ export class Player implements IPlayerEnemyActions, IPlayerWeaponActions {
 
     for (const key in movementDirections) {
       this.player.onKeyDown(key, () => {
-        this.player.move(movementDirections[key].scale(this.walkingSpeed));
+        this.player.move(movementDirections[key].scale(this.speed));
       });
     }
 
