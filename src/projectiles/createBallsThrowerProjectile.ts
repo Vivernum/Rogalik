@@ -11,7 +11,7 @@ import {
 import { TParticlesData } from "../types/particles";
 import { createProjectileParticles } from "../particles/createProjectileParticles";
 import { PartialAllAttackStatsType } from "../types/stats";
-import { EffectsType, EnemyUseEffectCallbackType } from "../types/effect";
+import { EffectPayloadType, EffectsType, EnemyUseEffectCallbackType } from "../types/effect";
 
 type ProjectileComp = {
   damage: PartialAllAttackStatsType;
@@ -33,8 +33,7 @@ export function createBallsThrowerProjectile(
   direction: Vec2,
   angle: number,
   damage: PartialAllAttackStatsType,
-  callback: EnemyUseEffectCallbackType,
-  effectType: EffectsType,
+  effectPayload: EffectPayloadType,
 ) {
   if (!cachedProjectile) {
     let projectileData = k.loadSprite(
@@ -107,7 +106,7 @@ export function createBallsThrowerProjectile(
 
   projectile.onCollide((obj: GameObj) => {
     if (obj.tags.includes("enemy")) {
-      obj.takeDamage(projectile.damage, callback, effectType);
+      obj.takeDamage(projectile.damage, effectPayload);
       // @FIXME: probably this cause particles appear in 0:0 if
       // collision appears to be out of the screen
       const collisionCenter = k.vec2(

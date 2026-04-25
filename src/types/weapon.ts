@@ -1,13 +1,12 @@
 import { Vec2 } from "kaplay";
 import { PartialPlayersAttackStatsType, PlayersAtackStatsType } from "./stats";
-import { EffectCallbackResultType } from "./effect";
-import { EnemyComp } from "./ememies";
+import { EffectPayloadType } from "./effect";
 
 export interface IWeapon {
   firingRate: number;
   timePassedSinceLastShot: number;
   damage: PartialPlayersAttackStatsType;
-  effectCallback: (entity: EnemyComp) => EffectCallbackResultType;
+  effectPayload: EffectPayloadType;
   takeShot: (
     position: Vec2,
     direction: Vec2,

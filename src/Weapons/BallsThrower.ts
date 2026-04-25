@@ -1,8 +1,16 @@
 import { KAPLAYCtxT, Vec2 } from "kaplay";
 import { Weapon } from "./Weapon";
 import { createBallsThrowerProjectile } from "../projectiles/createBallsThrowerProjectile";
-import { PartialAllAttackStatsType, PlayersAtackStatsType } from "../types/stats";
-import { EffectCallbackResultType, EffectsType, EnemyUseEffectCallbackType } from "../types/effect";
+import {
+  PartialAllAttackStatsType,
+  PlayersAtackStatsType,
+} from "../types/stats";
+import {
+  EffectCallbackResultType,
+  EffectPayloadType,
+  EffectsType,
+  EnemyUseEffectCallbackType,
+} from "../types/effect";
 import { EnemyComp } from "../types/ememies";
 
 export class BallsThrower extends Weapon {
@@ -10,25 +18,26 @@ export class BallsThrower extends Weapon {
   damage: PartialAllAttackStatsType = {
     physicalDamage: 20,
   };
-  effectType: EffectsType = EffectsType.COLD;
-  effectCallback: EnemyUseEffectCallbackType = (entity: EnemyComp) => {
-    entity.speed *= 0.5;
-    let id: number;
-    let promise: Promise<void> = new Promise((resolve) => {
-      id = setTimeout(() => {
-        resolve();
-      }, 5000);
-    });
+  effectPayload: EffectPayloadType = {
+    effectCallback: (entity: EnemyComp) => {
+      entity.speed *= 0.5;
+      let id: number;
+      const promise: Promise<void> = new Promise((resolve) => {
+        id = setTimeout(() => {
+          resolve();
+        }, 5000);
+      });
 
-    return {
-      stop: () => {
-        clearTimeout(id);
-        entity.speed /= 0.5;
-        console.log(entity.speed,);
-      },
-      onEnd: promise,
-    }
-  }
+      return {
+        stop: () => {
+          clearTimeout(id);
+          entity.speed /= 0.5;
+        },
+        onEnd: promise,
+      };
+    },
+    effectType: EffectsType.COLD,
+  };
 
   constructor(public k: KAPLAYCtxT) {
     super(k);
@@ -50,8 +59,7 @@ export class BallsThrower extends Weapon {
         ...attackStats,
         ...this.damage,
       },
-      this.effectCallback,
-      this.effectType,
+      this.effectPayload
     );
     this.timePassedSinceLastShot = 0;
   }

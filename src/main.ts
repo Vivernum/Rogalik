@@ -19,9 +19,9 @@ k.scene('begining', () => {
 
   const level = createGameLevel(k, map);
 
-  for (let i = 1; i <= 3; i++) {
-    createShriker(k, [i * 200, 550], player);
-  };
+  // for (let i = 1; i <= 3; i++) {
+  //   createShriker(k, [i * 200, 550], player);
+  // };
 });
 
 k.go('begining');

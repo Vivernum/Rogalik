@@ -17,6 +17,11 @@ export type EffectCallbackResultType = {
 export type EnemyUseEffectCallbackType = (entity: EnemyComp) => EffectCallbackResultType
 
 export interface IEffectController {
-  addEffect(effectType: EffectsType, callbackFn: EnemyUseEffectCallbackType, entity: EnemyComp): void,
+  addEffect(effectPayload: EffectPayloadType, entity: EnemyComp): void,
+  removeEffect(effectPayload: EffectPayloadType): void,
 }
 
+export type EffectPayloadType = {
+  effectCallback: EnemyUseEffectCallbackType,
+  effectType: EffectsType,
+};

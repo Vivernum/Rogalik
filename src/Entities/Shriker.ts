@@ -9,8 +9,8 @@ import { PartialAllAttackStatsType } from "../types/stats";
 import { calculateReceivedDamage } from "../utils/calculateRecievedDamage";
 import { EnemyAttackStatsController } from "../utils/controllers/attackStatsControllers";
 import ResistanceStatsController from "../utils/controllers/resistanceStatsController";
-import { EffectsController } from "../utils/controllers/effectsController";
-import { EffectsType, EnemyUseEffectCallbackType } from "../types/effect";
+import { EnemyEffectsController } from "../utils/controllers/effectsController";
+import { EffectPayloadType, EffectsType, EnemyUseEffectCallbackType } from "../types/effect";
 
 export function createShriker(
   k: KAPLAYCtxT,
@@ -73,7 +73,7 @@ export function createShriker(
         lightDamage: 0,
       }),
       resistanceStatsController: new ResistanceStatsController(),
-      effectsController: new EffectsController(),
+      effectsController: new EnemyEffectsController(),
       attackDuration: 0.5,
       action: EnemyActionsPull.Patrol,
 
@@ -163,8 +163,8 @@ export function createShriker(
         }
       },
 
-      takeDamage(damage: PartialAllAttackStatsType, callbackFn: EnemyUseEffectCallbackType, effectType: EffectsType) {
-        this.effectsController.addEffect(effectType, callbackFn, this);
+      takeDamage(damage: PartialAllAttackStatsType, effectPayload: EffectPayloadType) {
+        this.effectsController.addEffect(effectPayload, this);
         this.hp -= calculateReceivedDamage(
           damage,
           this.resistanceStatsController.getResistanceStats(),
