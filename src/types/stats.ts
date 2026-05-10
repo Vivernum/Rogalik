@@ -25,4 +25,5 @@ export type ResistanceType = {
   coldResistance: number;
   darkResistance: number;
   lightResistance: number;
+  durability: number;
 };

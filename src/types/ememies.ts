@@ -25,7 +25,7 @@ export interface EnemyComp {
   effectsController: IEffectController;
   attackDuration: number;
   action: EnemyActionsPull;
-  takeDamage: (damage: PartialAllAttackStatsType, effectPayload: EffectPayloadType) => void;
+  takeDamage: (damage: PartialAllAttackStatsType, effectPayload?: EffectPayloadType) => void;
 }
 
 export type TShriker = GameObj<PosComp | HealthComp | EnemyComp>;

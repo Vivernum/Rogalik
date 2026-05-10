@@ -5,7 +5,6 @@ export enum EffectsType {
   COLD,
   LIGHT,
   DARK,
-  POISON,
   BLEEDING
 };
 

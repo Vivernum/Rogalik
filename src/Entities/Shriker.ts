@@ -163,8 +163,10 @@ export function createShriker(
         }
       },
 
-      takeDamage(damage: PartialAllAttackStatsType, effectPayload: EffectPayloadType) {
-        this.effectsController.addEffect(effectPayload, this);
+      takeDamage(damage: PartialAllAttackStatsType, effectPayload?: EffectPayloadType) {
+        if (effectPayload) {
+          this.effectsController.addEffect(effectPayload, this);
+        };
         this.hp -= calculateReceivedDamage(
           damage,
           this.resistanceStatsController.getResistanceStats(),

@@ -8,6 +8,7 @@ class ResistanceStatsController implements IResistanceStatsController{
     coldResistance: 0,
     darkResistance: 0,
     lightResistance: 0,
+    durability: 0,
   };
 
   constructor(resistanceStats?: ResistanceType) {
