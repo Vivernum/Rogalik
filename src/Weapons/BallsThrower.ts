@@ -6,10 +6,8 @@ import {
   PlayersAtackStatsType,
 } from "../types/stats";
 import {
-  EffectCallbackResultType,
-  EffectPayloadType,
+  EnemyEffectPayloadType,
   EffectsType,
-  EnemyUseEffectCallbackType,
 } from "../types/effect";
 import { EnemyComp } from "../types/ememies";
 
@@ -18,7 +16,7 @@ export class BallsThrower extends Weapon {
   damage: PartialAllAttackStatsType = {
     physicalDamage: 20,
   };
-  effectPayload: EffectPayloadType = {
+  effectPayload: EnemyEffectPayloadType = {
     effectCallback: (entity: EnemyComp) => {
       entity.speed *= 0.5;
       let id: number;

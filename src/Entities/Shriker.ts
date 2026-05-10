@@ -10,7 +10,7 @@ import { calculateReceivedDamage } from "../utils/calculateRecievedDamage";
 import { EnemyAttackStatsController } from "../utils/controllers/attackStatsControllers";
 import ResistanceStatsController from "../utils/controllers/resistanceStatsController";
 import { EnemyEffectsController } from "../utils/controllers/effectsController";
-import { EffectPayloadType, EffectsType, EnemyUseEffectCallbackType } from "../types/effect";
+import { EnemyEffectPayloadType, EffectsType, EnemyUseEffectCallbackType } from "../types/effect";
 
 export function createShriker(
   k: KAPLAYCtxT,
@@ -163,7 +163,7 @@ export function createShriker(
         }
       },
 
-      takeDamage(damage: PartialAllAttackStatsType, effectPayload?: EffectPayloadType) {
+      takeDamage(damage: PartialAllAttackStatsType, effectPayload?: EnemyEffectPayloadType) {
         if (effectPayload) {
           this.effectsController.addEffect(effectPayload, this);
         };

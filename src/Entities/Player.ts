@@ -2,8 +2,6 @@ import { KAPLAYCtxT, Vec2 } from "kaplay";
 import { createParticles } from "../utils/collisionParticles";
 import {
   TPlayer,
-  IPlayerEnemyActions,
-  IPlayerWeaponActions,
   IPlayer,
 } from "../types/player";
 import { IWeapon } from "../types/weapon";

@@ -2,10 +2,9 @@ import { GameObj, HealthComp, PosComp } from "kaplay";
 import { TPlayer } from "./player";
 import {
   IEnemyAttackStatsController,
-  IPlayersAttackStatsController,
   IResistanceStatsController,
 } from "./controllers";
-import { EffectPayloadType, EffectsType, EnemyUseEffectCallbackType, IEffectController } from "./effect";
+import { EnemyEffectPayloadType, IEnemyEffectController } from "./effect";
 import { PartialAllAttackStatsType } from "./stats";
 
 export enum EnemyActionsPull {
@@ -22,10 +21,10 @@ export interface EnemyComp {
   lastAttackTime: number;
   attackStatsController: IEnemyAttackStatsController;
   resistanceStatsController: IResistanceStatsController;
-  effectsController: IEffectController;
+  effectsController: IEnemyEffectController;
   attackDuration: number;
   action: EnemyActionsPull;
-  takeDamage: (damage: PartialAllAttackStatsType, effectPayload?: EffectPayloadType) => void;
+  takeDamage: (damage: PartialAllAttackStatsType, effectPayload?: EnemyEffectPayloadType) => void;
 }
 
 export type TShriker = GameObj<PosComp | HealthComp | EnemyComp>;
