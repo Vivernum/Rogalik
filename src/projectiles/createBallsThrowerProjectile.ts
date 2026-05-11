@@ -12,6 +12,7 @@ import { TParticlesData } from "../types/particles";
 import { createProjectileParticles } from "../particles/createProjectileParticles";
 import { PartialAllAttackStatsType } from "../types/stats";
 import { EnemyEffectPayloadType } from "../types/effect";
+import { EnemyComp } from "../types/ememies";
 
 type ProjectileComp = {
   damage: PartialAllAttackStatsType;
@@ -95,7 +96,6 @@ export function createBallsThrowerProjectile(
       shape: new k.Circle(k.vec2(0, 0), PROJECTILE_RADIUS),
     }),
     k.move(direction, PROJECTILE_SPEED),
-    k.offscreen({ destroy: true }),
     k.anchor(k.vec2(0, 0)),
     {
       damage,
@@ -103,6 +103,16 @@ export function createBallsThrowerProjectile(
     },
     "projectile",
   ]);
+
+  const projectileShadow = k.add([
+    k.anchor(k.vec2(0, -3)),
+    k.ellipse(8, 5),
+    k.color(k.BLACK),
+    k.opacity(0.4),
+    k.z(-1),
+    k.pos(projectile.pos),
+    k.follow(projectile),
+  ])
 
   projectile.onCollide((obj: GameObj) => {
     if (obj.tags.includes("enemy")) {
@@ -115,6 +125,7 @@ export function createBallsThrowerProjectile(
       );
       projectile.lastPosition = collisionCenter;
       projectile.destroy();
+      projectileShadow.destroy();
     }
     if (obj.tags.includes("wall") || obj.tags.includes("obstacle")) {
       const collisionCenter = k.vec2(
@@ -123,6 +134,7 @@ export function createBallsThrowerProjectile(
       );
       projectile.lastPosition = collisionCenter;
       projectile.destroy();
+      projectileShadow.destroy();
     }
   });
 

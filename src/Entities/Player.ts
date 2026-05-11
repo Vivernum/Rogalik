@@ -88,6 +88,14 @@ export class Player implements IPlayer {
       });
     }
 
+    const shadow = this.player.add([
+      this.k.anchor(this.k.vec2(0, -2.5)),
+      this.k.ellipse(16, 6),
+      this.k.color(k.BLACK),
+      this.k.opacity(0.4),
+      this.k.z(-1),
+    ]);
+
     this.player.onUpdate(() => {
       k.setCamPos(this.player.pos);
       k.setCamScale(2.3);

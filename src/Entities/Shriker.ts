@@ -195,6 +195,14 @@ export function createShriker(
     },
   ]);
 
+  const shadow = enemy.add([
+    k.anchor(k.vec2(0, -2.5)),
+    k.ellipse(16, 6),
+    k.color(k.BLACK),
+    k.opacity(0.4),
+    k.z(-1),
+  ]);
+
   const healthBarFill = createHelthBar(k, enemy, k.vec2(0, -25));
 
   const hittingCircle = enemy.add([

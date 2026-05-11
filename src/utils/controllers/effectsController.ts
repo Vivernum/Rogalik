@@ -17,6 +17,7 @@ export class EnemyEffectsController implements IEnemyEffectController {
   };
 
   public removeEffect({ effectType }: EnemyEffectPayloadType) {
+    if (!this.effects.has(effectType)) return;
     this.effects.get(effectType)?.stop();
     this.effects.delete(effectType);
   }
