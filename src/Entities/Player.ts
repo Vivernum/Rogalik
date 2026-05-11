@@ -1,5 +1,5 @@
 import { KAPLAYCtxT, Vec2 } from "kaplay";
-import { createParticles } from "../utils/collisionParticles";
+import { createParticles } from "../particles/collisionParticles";
 import {
   TPlayer,
   IPlayer,
@@ -13,15 +13,21 @@ import {
 import { IPlayersAttackStatsController, IResistanceStatsController } from "../types/controllers";
 import { PlayerAttackStatsController } from "../utils/controllers/attackStatsControllers";
 import ResistanceStatsController from "../utils/controllers/resistanceStatsController";
+import { IPlayerEffectController, PlayerEffectPayloadType } from "../types/effect";
+import { PlayerEffectsController } from "../utils/controllers/effectsController";
+
+const START_HEALTH = 100;
 
 export class Player implements IPlayer {
   public player: TPlayer;
+  public maxHealth: number = 100;
   public hitCooldown: number = 1;
   public timePassedSinceLastHit: number = 0;
   public speed: number = 200;
   public equipedWeapon: IWeapon;
   public attackStatsController: IPlayersAttackStatsController = new PlayerAttackStatsController();
   public resistanceStatsController: IResistanceStatsController = new ResistanceStatsController();
+  public effectsController: IPlayerEffectController = new PlayerEffectsController();
 
   constructor(
     protected k: KAPLAYCtxT,
@@ -65,7 +71,7 @@ export class Player implements IPlayer {
         anim: "idle",
       }),
       k.pos(this.position[0], this.position[1]),
-      k.health(100, 100),
+      k.health(START_HEALTH, this.maxHealth),
       k.anchor("center"),
       k.opacity(1),
       k.stay(),
@@ -105,8 +111,9 @@ export class Player implements IPlayer {
   }
 
   // Method to handle player damage
-  damageHandler(attackStats: PartialEnemyAttackStatsType): void {
+  damageHandler(attackStats: PartialEnemyAttackStatsType, effectPayload?: PlayerEffectPayloadType): void {
     if (this.timePassedSinceLastHit > this.hitCooldown) {
+      if (effectPayload) this.effectsController.addEffect(effectPayload, this);
       this.player.hp -= calculateReceivedDamage(
         attackStats,
         this.resistanceStatsController.getResistanceStats(),

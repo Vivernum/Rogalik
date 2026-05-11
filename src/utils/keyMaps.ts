@@ -4,5 +4,4 @@ export const damageToResistance = new Map([
   ["coldDamage", "coldResistance"],
   ["darkDamage", "darkResistance"],
   ["lightDamage", "lightResistance"],
-  ["bleedingDamage", "durability"],
 ]);

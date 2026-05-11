@@ -65,7 +65,7 @@ export function createBallsThrowerProjectile(
 
   let particlesData: Asset<SpriteData>;
 
-  // caching so there is no need to load the sprite every time
+  // caching in RAM so there is no need to load the sprite every time
   // and we don't get errors
   if (!cachedParticlesData) {
     particlesData = k.loadSprite(

@@ -6,7 +6,6 @@ export enum EffectsType {
   COLD,
   LIGHT,
   DARK,
-  BLEEDING
 };
 
 export type EffectCallbackResultType = {
