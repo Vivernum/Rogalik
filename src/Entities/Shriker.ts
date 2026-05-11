@@ -1,8 +1,8 @@
 import { KAPLAYCtxT, GameObj } from "kaplay";
 import { createHelthBar } from "../utils/healthBar";
-import { createParticles } from "../utils/collisionParticles";
-import { createCircularParticles } from "../utils/createCircularParticles";
-import { IPlayerEnemyActions, TPlayer } from "../types/player";
+import { createParticles } from "../particles/collisionParticles";
+import { createCircularParticles } from "../particles/createCircularParticles";
+import { IPlayer, IPlayerEnemyActions, TPlayer } from "../types/player";
 import { TShriker } from "../types/ememies";
 import { EnemyActionsPull } from "../types/ememies";
 import { PartialAllAttackStatsType } from "../types/stats";
@@ -10,12 +10,32 @@ import { calculateReceivedDamage } from "../utils/calculateRecievedDamage";
 import { EnemyAttackStatsController } from "../utils/controllers/attackStatsControllers";
 import ResistanceStatsController from "../utils/controllers/resistanceStatsController";
 import { EnemyEffectsController } from "../utils/controllers/effectsController";
-import { EffectPayloadType, EffectsType, EnemyUseEffectCallbackType } from "../types/effect";
+import { EffectsType, EnemyEffectPayloadType, PlayerEffectPayloadType } from "../types/effect";
 
 export function createShriker(
   k: KAPLAYCtxT,
   startingPos: number[],
   player: IPlayerEnemyActions,
+  effectPayload: PlayerEffectPayloadType = {
+      effectCallback: (entity: IPlayer) => {
+        entity.speed *= 0.5;
+        let id: number;
+        const promise: Promise<void> = new Promise((resolve) => {
+          id = setTimeout(() => {
+            resolve();
+          }, 5000);
+        });
+  
+        return {
+          stop: () => {
+            clearTimeout(id);
+            entity.speed /= 0.5;
+          },
+          onEnd: promise,
+        };
+      },
+      effectType: EffectsType.COLD,
+    },
 ) {
   k.loadSprite("enemy", "sprites/Entities/shriker.png", {
     sliceX: 12,
@@ -163,7 +183,7 @@ export function createShriker(
         }
       },
 
-      takeDamage(damage: PartialAllAttackStatsType, effectPayload?: EffectPayloadType) {
+      takeDamage(damage: PartialAllAttackStatsType, effectPayload?: EnemyEffectPayloadType) {
         if (effectPayload) {
           this.effectsController.addEffect(effectPayload, this);
         };
@@ -192,7 +212,7 @@ export function createShriker(
   ]);
 
   hittingCircle.onCollide("player", () => {
-    player.damageHandler(enemy.attackStatsController.getDamageStats());
+    player.damageHandler(enemy.attackStatsController.getDamageStats(), effectPayload);
   });
 
   enemy.onHurt(() => {

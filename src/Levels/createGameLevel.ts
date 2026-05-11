@@ -1,5 +1,5 @@
 import { KAPLAYCtxT } from "kaplay";
-import { createParticles } from "../utils/collisionParticles";
+import { createParticles } from "../particles/collisionParticles";
 
 const tileDimension = 32;
 

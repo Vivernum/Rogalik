@@ -5,15 +5,14 @@ import {
   IPlayersAttackStatsController,
   IResistanceStatsController,
 } from "./controllers";
+import { IPlayerEffectController, PlayerEffectPayloadType } from "./effect";
 
 export interface IPlayerEnemyActions {
-  damageHandler: (attackStats: PartialEnemyAttackStatsType) => void;
+  damageHandler: (attackStats: PartialEnemyAttackStatsType, effectPayload?: PlayerEffectPayloadType) => void;
 }
 
 export interface IPlayerWeaponActions {
   player: TPlayer;
-  // equipWeapon: (weapon: TWeapon) => void,
-  // unEquipWeapon: () => void,
 }
 
 export interface IHealthPlayerComp {
@@ -24,10 +23,12 @@ export type TPlayer = GameObj<PosComp | HealthComp | AreaComp>;
 
 export interface IPlayer {
   player: TPlayer;
+  maxHealth: number;
   hitCooldown: number;
   timePassedSinceLastHit: number;
   speed: number;
   equipedWeapon: IWeapon;
   attackStatsController: IPlayersAttackStatsController;
   resistanceStatsController: IResistanceStatsController;
+  effectsController: IPlayerEffectController;
 }

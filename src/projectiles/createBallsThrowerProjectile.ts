@@ -11,7 +11,7 @@ import {
 import { TParticlesData } from "../types/particles";
 import { createProjectileParticles } from "../particles/createProjectileParticles";
 import { PartialAllAttackStatsType } from "../types/stats";
-import { EffectPayloadType, EffectsType, EnemyUseEffectCallbackType } from "../types/effect";
+import { EnemyEffectPayloadType } from "../types/effect";
 
 type ProjectileComp = {
   damage: PartialAllAttackStatsType;
@@ -33,7 +33,7 @@ export function createBallsThrowerProjectile(
   direction: Vec2,
   angle: number,
   damage: PartialAllAttackStatsType,
-  effectPayload: EffectPayloadType,
+  effectPayload: EnemyEffectPayloadType,
 ) {
   if (!cachedProjectile) {
     let projectileData = k.loadSprite(
@@ -65,7 +65,7 @@ export function createBallsThrowerProjectile(
 
   let particlesData: Asset<SpriteData>;
 
-  // caching so there is no need to load the sprite every time
+  // caching in RAM so there is no need to load the sprite every time
   // and we don't get errors
   if (!cachedParticlesData) {
     particlesData = k.loadSprite(
